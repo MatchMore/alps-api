@@ -1,0 +1,2 @@
+This is Matchmore ALPS APIs project defining and describing a variety
+of RESTful APIs of our cloud service.
