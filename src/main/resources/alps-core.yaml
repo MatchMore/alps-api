@@ -7,7 +7,7 @@ securityDefinitions:
 security:
   - api-key: []
 info:
-  version: 0.2.0
+  version: 0.3.0
   title: MATCHMORE ALPS Core REST API
   license:
     name: MIT
