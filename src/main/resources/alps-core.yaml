@@ -8,61 +8,33 @@ security:
   - api-key: []
 info:
   version: 0.3.0
-  title: MATCHMORE ALPS Core REST API
-  license:
-    name: MIT
-  description: >
-
-    ## [MATCHMORE --- We connect things!](http://dev.matchmore.io)
-
-    The first version of the MATCHMORE API is an exciting step to allow
+  title: ALPS Core REST API
+  description: >-
+    The first version of the ALPS Core REST API is an exciting step to allow
     developers use a context-aware pub/sub cloud service.  A lot of mobile
     applications and their use cases may be modeled using this approach and can
-    therefore profit form using MATCHMORE as their backend service.
+    therefore profit form using [Matchmore](http://dev.matchmore.io) as their backend service.
 
 
-    **Build something great with MATCHMORE!**
+    ## Build something great with Matchmore! ##
 
-
-    Once you've [registered your
-    client](https://dev.matchmore.io/account/register/) it's easy start using our
-    awesome cloud based context-aware pub/sub (admitted, a lot of buzzwords).
+    Once you've [registered your client](http://dev.matchmore.io/account/register/)
+    it's easy start using our awesome cloud based context-aware pub/sub
+    (admitted, a lot of buzzwords).
 
     ## RESTful API
 
     We do our best to have all our URLs be
-
     [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer).
-
     Every endpoint (URL) may support one of four different http verbs. GET
-
     requests fetch information about an object, POST requests create objects,
-
     PUT requests update objects, and finally DELETE requests will delete
-
     objects.
 
-
-    ## Domain model
-
-    ### User
-
-    ### Device
-
-    ### Location
-
-    ### Publication
-
-    ### Subscription
-
-    ### Match
-
-    ## More about MATCHMORE
-  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
 host: api.matchmore.io
 basePath: /v03
 schemes:
-  - http
+  - https
 consumes:
   - application/json
 produces:
@@ -248,7 +220,7 @@ paths:
         - name: userId
           in: path
           required: true
-          description: The id (UUID) of the user of the device
+          description: The id (UUID) of the user
           type: string
       responses:
         '200':
@@ -874,8 +846,6 @@ definitions:
           The topic of the publication. This will act as a first match filter.
           For a subscription to be able to match a publication they must have
           the exact same topic
-      location:
-        $ref: '#/definitions/Location'
       range:
         type: number
         format: double
@@ -936,8 +906,6 @@ definitions:
           This is an expression to filter the publications. For instance
           'job='developer'' will allow matching only with publications
           containing a 'job' key with a value of 'developer'
-      location:
-        $ref: '#/definitions/Location'
       range:
         type: number
         format: double
