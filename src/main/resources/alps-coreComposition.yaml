@@ -1,0 +1,1025 @@
+swagger: '2.0'
+securityDefinitions:
+  api-key:
+    type: apiKey
+    in: header
+    name: api-key
+security:
+  - api-key: []
+info:
+  version: 0.3.0
+  title: MATCHMORE ALPS Core REST API
+  license:
+    name: MIT
+  description: >
+    ## [MATCHMORE --- We connect things!](http://dev.matchmore.io)
+    The first version of the MATCHMORE API is an exciting step to allow
+    developers use a context-aware pub/sub cloud service.  A lot of mobile
+    applications and their use cases may be modeled using this approach and can
+    therefore profit form using MATCHMORE as their backend service.
+    **Build something great with MATCHMORE!**
+    Once you've [registered your
+    client](https://dev.matchmore.io/account/register/) it's easy start using our
+    awesome cloud based context-aware pub/sub (admitted, a lot of buzzwords).
+
+    ## RESTful API
+    We do our best to have all our URLs be
+    [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer).
+    Every endpoint (URL) may support one of four different http verbs. GET
+    requests fetch information about an object, POST requests create objects,
+    PUT requests update objects, and finally DELETE requests will delete
+    objects.
+
+    ## Domain model
+
+    ### User
+
+    ### Device
+
+    ### Location
+
+    ### Publication
+
+    ### Subscription
+
+    ### Match
+
+    ## More about MATCHMORE
+  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+host: api.matchmore.io
+basePath: /v03
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /users:
+    get:
+      summary: List all users
+      operationId: getUsers
+      tags:
+        - users
+      produces:
+        - application/json
+      parameters:
+        - name: limit
+          in: query
+          description: 'How many items to return at one time (1-100, default 100)'
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: An array of users
+          schema:
+            $ref: '#/definitions/Users'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+    post:
+      summary: Create a user
+      operationId: createUser
+      tags:
+        - users
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: formData
+          description: The name of the user to be created
+          type: string
+          required: true
+      responses:
+        '201':
+          description: Newly created user
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}':
+    get:
+      summary: Info about a user
+      operationId: getUser
+      tags:
+        - user
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user to retrieve
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Users'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices':
+    post:
+      summary: Create device for a user
+      operationId: createDevice
+      tags:
+        - user
+        - device
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user for which to create a device
+          type: string
+        - name: name
+          type: string
+          in: formData
+          required: true
+          description: The name of the device
+        - name: platform
+          type: string
+          in: formData
+          required: true
+          description: |
+            The platform of the device, this can be any string
+            representing the platform type, for instance 'iOS 9.3'
+        - name: deviceToken
+          type: string
+          required: true
+          in: formData
+          description: |
+            The deviceToken is the device push notification token
+            given to this device by the OS, either iOS or Android,
+            for identifying the device with push notification
+            services.
+        - name: latitude
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The latitude of the device.
+        - name: longitude
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The longitude of the device.
+        - name: altitude
+          type: number
+          format: double
+          default: 0
+          required: true
+          in: formData
+          description: |
+            The altitude of the device.
+        - name: horizontalAccuracy
+          type: number
+          format: double
+          default: 5
+          required: false
+          in: formData
+          description: |
+            The horizontal accuracy of the location, measured on a
+            scale from '0.0' to '1.0', '1.0' being the most
+            accurate. If this value is not specified then the
+            default value of '1.0' is used
+        - name: verticalAccuracy
+          type: number
+          format: double
+          default: 5
+          required: false
+          in: formData
+          description: |
+            The vertical accuracy of the location, measured on a
+            scale from '0.0' to '1.0', '1.0' being the most
+            accurate. If this value is not specified then the
+            default value of '1.0' is used
+      responses:
+        '201':
+          description: Representation of the newly created device for the user
+          schema:
+            $ref: '#/definitions/Device'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+    get:
+      summary: Get all devices for a user
+      operationId: getDevices
+      tags:
+        - user
+        - device
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Devices'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}':
+    get:
+      summary: Info about a device of a user
+      operationId: getDevice
+      tags:
+        - user
+        - device
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Device'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}/matches':
+    get:
+      summary: Get matches for the device
+      operationId: getMatches
+      tags:
+        - device
+        - matches
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Matches'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}/publications':
+    post:
+      summary: Create a publication for a device for a user
+      operationId: createPublication
+      tags:
+        - user
+        - device
+        - publication
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user to create a device for
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+        - name: topic
+          type: string
+          in: formData
+          required: true
+          description: |
+            The topic of the publication. This will act as a first
+            match filter. For a subscription to be able to match a
+            publication they must have the exact same topic
+        - name: range
+          type: number
+          format: double
+          in: formData
+          required: true
+          description: |
+            The range of the publication in meters. This is the
+            range around the device holding the publication in which
+            matches with subscriptions can be triggered
+        - name: duration
+          type: number
+          format: double
+          in: formData
+          required: true
+          description: |
+            The duration of the publication in seconds. If set to
+            '-1' the publication will live forever and if set to '0'
+            it will be instant at the time of publication.
+        - name: properties
+          type: string
+          in: formData
+          required: true
+          description: |
+            A string representing a map of (key, value) pairs in
+            JSON format:
+
+            `{"key1": "value1", "key2": "value2"}`
+      responses:
+        '201':
+          description: |
+            The representation of the newly created publication
+          schema:
+            $ref: '#/definitions/Publication'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+    get:
+      summary: Get all publications for a device
+      operationId: getPublications
+      tags:
+        - user
+        - device
+        - publication
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the device
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Publications'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}/publications/{publicationId}':
+    get:
+      summary: Info about a publication on a device of a user
+      operationId: getPublication
+      tags:
+        - user
+        - device
+        - publication
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+        - name: publicationId
+          in: path
+          required: true
+          description: The id (UUID) of the publication
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Publication'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      tags:
+        - user
+        - device
+        - publication
+      summary: Delete a Publication
+      description: ''
+      operationId: deletePublication
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+        - name: publicationId
+          in: path
+          required: true
+          description: The id (UUID) of the subscription
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}/subscriptions':
+    post:
+      summary: Create a subscription for a device for a user
+      operationId: createSubscription
+      tags:
+        - user
+        - device
+        - subscription
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: |
+            The id (UUID) of the user to create a device for
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: |
+            The id (UUID) of the user device
+        - name: topic
+          type: string
+          required: true
+          in: formData
+          description: |
+            The topic of the subscription. This will act as a first
+            match filter. For a subscription to be able to match a
+            publication they must have the exact same topic
+        - name: selector
+          type: string
+          required: true
+          in: formData
+          description: |
+            This is an expression to filter the publications. For
+            instance 'job='developer'' will allow matching only with
+            publications containing a 'job' key with a value of
+            'developer'
+        - name: range
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The range of the subscription in meters. This is the
+            range around the device holding the subscription in
+            which matches with publications can be triggered
+        - name: duration
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The duration of the subscription in seconds. If set to
+            '-1' the subscription will live forever and if set to
+            '0' it will be instant at the time of subscription.
+      responses:
+        '201':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Subscription'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+    get:
+      summary: Get all subscriptions for a device
+      operationId: getSubscriptions
+      tags:
+        - user
+        - device
+        - subscription
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the device
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Subscriptions'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}/subscriptions/{subscriptionId}':
+    get:
+      summary: Info about a subscription on a device of a user
+      operationId: getSubscription
+      tags:
+        - user
+        - device
+        - subscription
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+        - name: subscriptionId
+          in: path
+          required: true
+          description: The id (UUID) of the subscription
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Subscription'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      tags:
+        - user
+        - device
+        - subscription
+      summary: Delete a Subscription
+      description: ''
+      operationId: deleteSubscription
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device
+          type: string
+        - name: subscriptionId
+          in: path
+          required: true
+          description: The id (UUID) of the subscription
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/{deviceId}/locations':
+    post:
+      summary: Create a new location for a device
+      operationId: createLocation
+      tags:
+        - user
+        - device
+        - location
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the device
+          type: string
+        - name: latitude
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The latitude of the device.
+        - name: longitude
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The longitude of the device.
+        - name: altitude
+          type: number
+          format: double
+          default: 0
+          required: true
+          in: formData
+          description: |
+            The altitude of the device.
+        - name: horizontalAccuracy
+          type: number
+          format: double
+          default: 5
+          required: false
+          in: formData
+          description: |
+            The horizontal accuracy of the location, measured on a
+            scale from '0.0' to '1.0', '1.0' being the most
+            accurate. If this value is not specified then the
+            default value of '1.0' is used
+        - name: verticalAccuracy
+          type: number
+          format: double
+          default: 5
+          required: false
+          in: formData
+          description: |
+            The vertical accuracy of the location, measured on a
+            scale from '0.0' to '1.0', '1.0' being the most
+            accurate. If this value is not specified then the
+            default value of '1.0' is used
+      responses:
+        '201':
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/DeviceLocation'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+definitions:
+  User:
+    type: object
+    properties:
+      userId:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the user
+      name:
+        type: string
+        description: The name of the user
+  Users:
+    type: array
+    items:
+      $ref: '#/definitions/User'
+  DeviceType:
+    type: string
+    enum:
+        - MobileDevice
+        - PinDevice
+        - BeaconDevice
+  Device:
+    type: object
+    required:
+      - deviceId
+      - name
+      - deviceType
+    # discriminator: deviceType
+    properties:
+      deviceId:
+        type: string
+        description: The id (UUID) of the device
+        readOnly: true
+      name:
+        type: string
+        description: The name of the device
+      deviceType:
+        $ref: '#/definitions/DeviceType'
+  Devices:
+    type: array
+    items:
+      $ref: '#/definitions/Device'
+  Location:
+    type: object
+    required:
+      - latitude
+      - longitude
+      - altitude
+    properties:
+      timestamp:
+        type: integer
+        format: int64
+        description: |
+          The timestamp in seconds since Jan 01 1970. (UTC). If no
+          timestamp is provided upon creation then the system uses
+          the moment of the call to the api as a timestamp
+      latitude:
+        type: number
+        format: double
+        description: |
+          The latitude of the device in degrees, for instance
+          '46.5333' (Lausanne, Switzerland)
+      longitude:
+        type: number
+        format: double
+        description: |
+          The longitude of the device in degrees, for instance
+          '6.6667' (Lausanne, Switzerland)
+      altitude:
+        type: number
+        format: double
+        description: |
+          The altitude of the device in meters, for instance '495.0' (Lausanne,
+          Switzerland)
+      horizontalAccuracy:
+        type: number
+        format: double
+        default: 1
+        description: |
+          The horizontal accuracy of the location, measured on a
+          scale from '0.0' to '1.0', '1.0' being the most
+          accurate. If this value is not specified then the default
+          value of '1.0' is used
+      verticalAccuracy:
+        type: number
+        format: double
+        default: 1
+        description: |
+          The vertical accuracy of the location, measured on a scale from '0.0'
+          to '1.0', '1.0' being the most accurate. If this value is not
+          specified then the default value of '1.0' is used
+  DeviceLocation:
+    type: object
+    required:
+      - deviceId
+      - location
+    properties:
+      deviceId:
+        type: string
+        description: |
+          The id (UUID) of the device to create a device location for
+        readOnly: true
+      location:
+        $ref: '#/definitions/Location'
+  Publication:
+    type: object
+    required:
+      - topic
+      - range
+      - duration
+      - properties
+    properties:
+      timestamp:
+        type: integer
+        format: int64
+        description: >-
+          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
+          provided upon creation then the system uses the moment of the call to
+          the api as a timestamp
+      publicationId:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the publication
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a publication to
+      topic:
+        type: string
+        description: >-
+          The topic of the publication. This will act as a first match filter.
+          For a subscription to be able to match a publication they must have
+          the exact same topic
+      location:
+        $ref: '#/definitions/Location'
+      range:
+        type: number
+        format: double
+        description: >-
+          The range of the publication in meters. This is the range around the
+          device holding the publication in which matches with subscriptions can
+          be triggered
+      duration:
+        type: number
+        format: double
+        description: >-
+          The duration of the publication in seconds. If set to '-1' the
+          publication will live forever and if set to '0' it will be instant at
+          the time of publication.
+      properties:
+        type: string
+        description: 'The dictionary of key, value pairs.'
+      op:
+        type: string
+        description: >-
+          The internal operation resulting from the API call. For instance
+          'create'
+  Publications:
+    type: array
+    items:
+      $ref: '#/definitions/Publication'
+  Subscription:
+    type: object
+    required:
+      - topic
+      - selector
+      - range
+      - duration
+    properties:
+      timestamp:
+        type: integer
+        format: int64
+        description: >-
+          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
+          provided upon creation then the system uses the moment of the call to
+          the api as a timestamp
+      subscriptionId:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the subscription
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a subscription to
+      topic:
+        type: string
+        description: >-
+          The topic of the subscription. This will act as a first match filter.
+          For a subscription to be able to match a publication they must have
+          the exact same topic
+      selector:
+        type: string
+        description: >-
+          This is an expression to filter the publications. For instance
+          'job='developer'' will allow matching only with publications
+          containing a 'job' key with a value of 'developer'
+      location:
+        $ref: '#/definitions/Location'
+      range:
+        type: number
+        format: double
+        description: >-
+          The range of the subscription in meters. This is the range around the
+          device holding the subscription in which matches with publications can
+          be triggered
+      duration:
+        type: number
+        format: double
+        description: >-
+          The duration of the subscription in seconds. If set to '-1' the
+          subscription will live forever and if set to '0' it will be instant at
+          the time of subscription.
+      op:
+        type: string
+        description: >-
+          The internal operation resulting from the API call. For instance
+          'create'
+  Subscriptions:
+    type: array
+    items:
+      $ref: '#/definitions/Subscription'
+  Match:
+    type: object
+    description: An object representing a match between a subscription and a publication.
+    required:
+      - matchId
+      - timestamp
+      - publication
+      - subscription
+    properties:
+      matchId:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the user
+      timestamp:
+        type: integer
+        format: int64
+        description: The timestamp of the match in seconds since Jan 01 1970 (UTC).
+      publication:
+        $ref: '#/definitions/Publication'
+      subscription:
+        $ref: '#/definitions/Subscription'
+  Matches:
+    type: array
+    items:
+      $ref: '#/definitions/Match'
+  APIError:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+  MobileDevice:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Device'
+      - required:
+          - platform
+          - deviceToken
+          - location
+        properties:
+          platform:
+            type: string
+            description: |
+              The platform of the device, this can be any string
+              representing the platform type, for instance 'iOS'
+          deviceToken:
+            type: string
+            description: |
+              The deviceToken is the device push notification token
+              given to this device by the OS, either iOS or Android for
+              identifying the device with push notification
+              services.
+          location:
+            "$ref": "#/definitions/Location"
+  PinDevice:
+    type: object
+    allOf:
+      - $ref: '#/definitions/Device'
+      - required:
+          - location
+        properties:
+          location:
+            "$ref": "#/definitions/Location"
+  BeaconDevice:
+    type: object
+    allOf:
+        - $ref: '#/definitions/Device'
+        - properties:
+            uuid:
+              type: string
+              description: |
+                The UUID of the beacon, the purpose is to distinguish iBeacons
+                in your network, from all other beacons in
+                networks outside your control.
+            major:
+              type: integer
+              description: |
+                Major values are intended to identify and
+                distinguish a group
+              format: int32
+              minimum: 0
+              exclusiveMinimum: false
+              maximum: 65535
+              exclusiveMaximum: false
+            minor:
+              type: integer
+              description: |
+                Minor values are intended to identify and
+                distinguish an individual
+              format: int32
+              minimum: 0
+              exclusiveMinimum: false
+              maximum: 65535
+              exclusiveMaximum: false
