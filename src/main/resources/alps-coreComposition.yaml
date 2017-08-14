@@ -838,8 +838,6 @@ definitions:
           The topic of the publication. This will act as a first match filter.
           For a subscription to be able to match a publication they must have
           the exact same topic
-      location:
-        $ref: '#/definitions/Location'
       range:
         type: number
         format: double
@@ -900,8 +898,6 @@ definitions:
           This is an expression to filter the publications. For instance
           'job='developer'' will allow matching only with publications
           containing a 'job' key with a value of 'developer'
-      location:
-        $ref: '#/definitions/Location'
       range:
         type: number
         format: double
