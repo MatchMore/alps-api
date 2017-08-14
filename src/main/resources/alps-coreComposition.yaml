@@ -127,13 +127,13 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices':
+  '/users/{userId}/devices/mobile':
     post:
-      summary: Create device for a user
-      operationId: createDevice
+      summary: Create mobile device for a user
+      operationId: createMobileDevice
       tags:
         - user
-        - device
+        - mobile
       consumes:
         - application/json
         - application/x-www-form-urlencoded
@@ -212,19 +212,152 @@ paths:
             default value of '1.0' is used
       responses:
         '201':
-          description: Representation of the newly created device for the user
+          description: Representation of the newly created mobile device for the user
           schema:
-            $ref: '#/definitions/Device'
+            $ref: '#/definitions/MobileDevice'
         default:
           description: unexpected error
           schema:
             $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/pin':
+    post:
+      summary: Create a pin device for a user
+      operationId: createPinDevice
+      tags:
+        - user
+        - pin
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user for which to create a device
+          type: string
+        - name: name
+          type: string
+          in: formData
+          required: true
+          description: The name of the device
+        - name: latitude
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The latitude of the device.
+        - name: longitude
+          type: number
+          format: double
+          required: true
+          in: formData
+          description: |
+            The longitude of the device.
+        - name: altitude
+          type: number
+          format: double
+          default: 0
+          required: true
+          in: formData
+          description: |
+            The altitude of the device.
+        - name: horizontalAccuracy
+          type: number
+          format: double
+          default: 5
+          required: false
+          in: formData
+          description: |
+            The horizontal accuracy of the location, measured on a
+            scale from '0.0' to '1.0', '1.0' being the most
+            accurate. If this value is not specified then the
+            default value of '1.0' is used
+        - name: verticalAccuracy
+          type: number
+          format: double
+          default: 5
+          required: false
+          in: formData
+          description: |
+            The vertical accuracy of the location, measured on a
+            scale from '0.0' to '1.0', '1.0' being the most
+            accurate. If this value is not specified then the
+            default value of '1.0' is used
+      responses:
+        '201':
+          description: Representation of the newly created pin device for the user
+          schema:
+            $ref: '#/definitions/PinDevice'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/beacon':
+    post:
+      summary: Create a beacon device for a user
+      operationId: createBeaconDevice
+      tags:
+        - user
+        - beacon
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user for which to create a device
+          type: string
+        - name: name
+          type: string
+          in: formData
+          required: true
+          description: The name of the device
+        - name: uuid
+          type: string
+          required: true
+          in: formData
+          description: |
+            The UUID of the beacon
+        - name: major
+          type: number
+          format: integer
+          default: 0
+          required: true
+          in: formData
+          description: |
+            The major of the beacon
+        - name: minor
+          type: number
+          format: integer
+          default: 0
+          required: true
+          in: formData
+          description: |
+            The minor of the beacon
+      responses:
+        '201':
+          description: Representation of the newly created beacon device for the user
+          schema:
+            $ref: '#/definitions/BeaconDevice'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/APIError'
+  '/users/{userId}/devices':
     get:
       summary: Get all devices for a user
       operationId: getDevices
       tags:
         - user
-        - device
+        - mobile
+        - pin
+        - beacon
       produces:
         - application/json
       parameters:
@@ -237,7 +370,11 @@ paths:
         '200':
           description: Expected response to a valid request
           schema:
-            $ref: '#/definitions/Devices'
+            oneOf:
+              - $ref: '#/definitions/MobileDevice'
+              - $ref: '#/definitions/PinDevice'
+              - $ref: '#/definitions/BeaconDevice'
+            discriminator: deviceType
         default:
           description: unexpected error
           schema:
