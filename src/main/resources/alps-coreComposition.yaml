@@ -730,7 +730,6 @@ definitions:
   Device:
     type: object
     required:
-      - deviceId
       - name
       - deviceType
     # discriminator: deviceType
