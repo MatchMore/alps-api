@@ -877,7 +877,7 @@ definitions:
     allOf:
         - $ref: '#/definitions/Device'
         - properties:
-            uuid:
+            proximityUUID:
               type: string
               description: |
                 The UUID of the beacon, the purpose is to distinguish iBeacons
