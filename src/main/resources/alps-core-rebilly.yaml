@@ -12,7 +12,7 @@ info:
     therefore profit form using MATCHMORE as their backend service.
     **Build something great with MATCHMORE!**
     Once you've [registered your
-    client](https://dev.matchmore.io/account/register/) it's easy start using our
+    client](http://dev.matchmore.io/account/register/) it's easy start using our
     awesome cloud based context-aware pub/sub (admitted, a lot of buzzwords).
 
     ## RESTful API
@@ -25,32 +25,34 @@ info:
 
     ## Domain model
 
-    ### User
+    ### [User](#tag/user)
 
-    ### Device
+    ### [Users](#tag/users)
 
-    ### Location
+    ### [Device](#tag/device)
 
-    ### Publication
+    ### [Location](#tag/location)
 
-    ### Subscription
+    ### [Publication](#tag/publication)
 
-    ### Match
+    ### [Subscription](#tag/subscription)
+
+    ### [Matches](#tag/matches)
 
     ## [More about MATCHMORE](http://dev.matchmore.io)
 
-  version: '0.3.0'
+  version: '0.4.0'
 
   title: MATCHMORE ALPS Core REST API
 
-  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+  termsOfService: 'http://dev.matchmore.io/about/legal/terms/api'
   contact:
     email: info@matchmore.com
-    url: 'https://dev.adjago.io/corporate'
+    url: 'http://dev.matchmore.io/corporate'
   license:
     name: MIT
   x-logo:
-    url: 'https://dev.adjago.io/static/img/logo/logo_marina_trans_beta.png'
+    url: 'http://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
   description: MatchMore Developer Documentation
   url: 'http://dev.matchmore.com/'
@@ -59,20 +61,20 @@ consumes:
 produces:
   - application/json
 tags:
-  - name : users
-    description: Get information about users
   - name : user
     description : Manage user
+  - name : users
+    description: Get information about users
   - name : device
     description : Operation about device
-  - name : matches
-    description : Operation about matches
-  - name : subscription
-    description : Operation about subscription
-  - name : publication
-    description : Operation about publication
   - name : location
     description : Operation about location
+  - name : publication
+    description : Operation about publication
+  - name : subscription
+    description : Operation about subscription
+  - name : matches
+    description : Operation about matches
 securityDefinitions:
   api-key:
     type: apiKey
@@ -900,7 +902,15 @@ definitions:
       its presence via Bluetooth advertising packets.
     allOf:
         - $ref: '#/definitions/Device'
-        - properties:
+        - required:
+            - proximityUUID
+            - major
+            - minor
+          properties:
+            vendor:
+              type: string
+              description: The iBeacon's brand
+              default: ""
             proximityUUID:
               type: string
               description: |
