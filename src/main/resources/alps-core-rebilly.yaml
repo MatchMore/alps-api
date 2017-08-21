@@ -584,6 +584,8 @@ paths:
 definitions:
   User:
     type: object
+    required:
+      - id
     description: |
       A user represents an anonymous user of the ALPS middleware.
       He/she can be connected via its mobile device or a user can
@@ -599,6 +601,7 @@ definitions:
       name:
         type: string
         description: The name of the user.
+        default: ''
   Users:
     type: array
     items:
@@ -618,7 +621,7 @@ definitions:
       A device might be either virtual like a pin device or
       physical like a mobile phone or iBeacon device.
     required:
-      - name
+      - id
       - deviceType
     discriminator: deviceType
     properties:
@@ -629,6 +632,7 @@ definitions:
       name:
         type: string
         description: The name of the device.
+        default: ''
       deviceType:
         $ref: '#/definitions/DeviceType'
   Devices:
@@ -638,6 +642,7 @@ definitions:
   Location:
     type: object
     required:
+      - timestamp
       - latitude
       - longitude
       - altitude
@@ -706,11 +711,21 @@ definitions:
       The zone is defined as circle with a center at the given
       location and a range around that location.
     required:
+      - id
+      - deviceId
+      - timestamp
       - topic
       - range
       - duration
       - properties
     properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the publication.
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a publication to.
       timestamp:
         type: integer
         format: int64
@@ -719,13 +734,6 @@ definitions:
           The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
           provided upon creation then the system uses the moment of the call to
           the api as a timestamp.
-      id:
-        type: string
-        readOnly: true
-        description: The id (UUID) of the publication.
-      deviceId:
-        type: string
-        description: The id (UUID) of the device to attach a publication to.
       topic:
         type: string
         description: >-
@@ -749,11 +757,6 @@ definitions:
       properties:
         type: string
         description: 'The dictionary of key, value pairs.'
-      op:
-        type: string
-        description: >-
-          The internal operation resulting from the API call. For instance
-          'create'.
   Publications:
     type: array
     items:
@@ -766,11 +769,21 @@ definitions:
       defined as circle with a center at the given location and a range
       around that location.
     required:
+      - id
+      - deviceId
+      - timestamp
       - topic
       - selector
       - range
       - duration
     properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the subscription.
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a subscription to.
       timestamp:
         type: integer
         format: int64
@@ -779,13 +792,6 @@ definitions:
           The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
           provided upon creation then the system uses the moment of the call to
           the api as a timestamp.
-      id:
-        type: string
-        readOnly: true
-        description: The id (UUID) of the subscription.
-      deviceId:
-        type: string
-        description: The id (UUID) of the device to attach a subscription to.
       topic:
         type: string
         description: >-
@@ -812,11 +818,6 @@ definitions:
           The duration of the subscription in seconds. If set to '-1' the
           subscription will live forever and if set to '0' it will be instant at
           the time of subscription.
-      op:
-        type: string
-        description: >-
-          The internal operation resulting from the API call. For instance
-          'create'.
   Subscriptions:
     type: array
     items:
@@ -825,7 +826,7 @@ definitions:
     type: object
     description: An object representing a match between a subscription and a publication.
     required:
-      - matchId
+      - id
       - timestamp
       - publication
       - subscription
@@ -867,7 +868,6 @@ definitions:
       - required:
           - platform
           - deviceToken
-          - location
         properties:
           platform:
             type: string
