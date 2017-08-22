@@ -112,7 +112,6 @@ paths:
         - users
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -163,7 +162,6 @@ paths:
         - device
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -278,7 +276,6 @@ paths:
         - publication
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -414,7 +411,6 @@ paths:
         - subscription
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -551,7 +547,6 @@ paths:
         - location
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
