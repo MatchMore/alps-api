@@ -1,8 +1,8 @@
 swagger: '2.0'
 schemes:
-  - http
+  - https
 host: api.matchmore.io
-basePath: /v03
+basePath: /v04
 info:
   description: |
     ## MATCHMORE
@@ -12,12 +12,12 @@ info:
     therefore profit form using MATCHMORE as their backend service.
     **Build something great with MATCHMORE!**
     Once you've [registered your
-    client](http://dev.matchmore.io/account/register/) it's easy start using our
+    client](https://dev.matchmore.io/account/register/) it's easy start using our
     awesome cloud based context-aware pub/sub (admitted, a lot of buzzwords).
 
     ## RESTful API
     We do our best to have all our URLs be
-    [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer).
+    [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer).
     Every endpoint (URL) may support one of four different http verbs. GET
     requests fetch information about an object, POST requests create objects,
     PUT requests update objects, and finally DELETE requests will delete
@@ -39,23 +39,23 @@ info:
 
     ### [Matches](#tag/matches)
 
-    ## [More about MATCHMORE](http://dev.matchmore.io)
+    ## [More about MATCHMORE](https://dev.matchmore.io)
 
   version: '0.4.0'
 
   title: MATCHMORE ALPS Core REST API
 
-  termsOfService: 'http://dev.matchmore.io/about/legal/terms/api'
+  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
   contact:
-    email: info@matchmore.com
-    url: 'http://dev.matchmore.io/corporate'
+    email: apihelp@matchmore.com
+    url: 'https://dev.matchmore.io/corporate'
   license:
     name: MIT
   x-logo:
-    url: 'http://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+    url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
   description: MatchMore Developer Documentation
-  url: 'http://dev.matchmore.com/'
+  url: 'https://dev.matchmore.com/'
 consumes:
   - application/json
 produces:
@@ -581,6 +581,7 @@ definitions:
     type: object
     required:
       - id
+      - created_at
     description: |
       A user represents an anonymous user of the ALPS middleware.
       He/she can be connected via its mobile device or a user can
@@ -597,6 +598,21 @@ definitions:
         type: string
         description: The name of the user.
         default: ''
+      created_at:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          Timestamp of moment when user was created at.
+          The timestamp in seconds since Jan 01 1970. (UTC).
+      updated_at:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
+          provided upon creation then the system uses the moment of the call to
+          the api as a timestamp.
   Users:
     type: array
     items:
@@ -618,6 +634,7 @@ definitions:
     required:
       - id
       - deviceType
+      - created_at
     discriminator: deviceType
     properties:
       id:
@@ -630,6 +647,22 @@ definitions:
         default: ''
       deviceType:
         $ref: '#/definitions/DeviceType'
+      created_at:
+        type: integer
+        format: int64
+        readOnly: true
+        description: >-
+          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
+          provided upon creation then the system uses the moment of the call to
+          the api as a timestamp.
+      updated_at:
+        type: integer
+        format: int64
+        readOnly: true
+        description: >-
+          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
+          provided upon creation then the system uses the moment of the call to
+          the api as a timestamp.
   Devices:
     type: array
     items:
@@ -637,12 +670,12 @@ definitions:
   Location:
     type: object
     required:
-      - timestamp
+      - created_at
       - latitude
       - longitude
       - altitude
     properties:
-      timestamp:
+      created_at:
         type: integer
         format: int64
         readOnly: true
@@ -653,18 +686,21 @@ definitions:
       latitude:
         type: number
         format: double
+        default: 0
         description: |
           The latitude of the device in degrees, for instance
           '46.5333' (Lausanne, Switzerland).
       longitude:
         type: number
         format: double
+        default: 0
         description: |
           The longitude of the device in degrees, for instance
           '6.6667' (Lausanne, Switzerland).
       altitude:
         type: number
         format: double
+        default: 0
         description: |
           The altitude of the device in meters, for instance '495.0' (Lausanne,
           Switzerland).
@@ -685,19 +721,6 @@ definitions:
           The vertical accuracy of the location, measured on a scale from '0.0'
           to '1.0', '1.0' being the most accurate. If this value is not
           specified then the default value of '1.0' is used.
-  DeviceLocation:
-    type: object
-    required:
-      - deviceId
-      - location
-    properties:
-      deviceId:
-        type: string
-        description: |
-          The id (UUID) of the device to create a device location for.
-        readOnly: true
-      location:
-        $ref: '#/definitions/Location'
   Publication:
     type: object
     description: |
@@ -708,7 +731,7 @@ definitions:
     required:
       - id
       - deviceId
-      - timestamp
+      - created_at
       - topic
       - range
       - duration
@@ -721,7 +744,7 @@ definitions:
       deviceId:
         type: string
         description: The id (UUID) of the device to attach a publication to.
-      timestamp:
+      created_at:
         type: integer
         format: int64
         readOnly: true
@@ -766,7 +789,7 @@ definitions:
     required:
       - id
       - deviceId
-      - timestamp
+      - created_at
       - topic
       - selector
       - range
@@ -779,7 +802,7 @@ definitions:
       deviceId:
         type: string
         description: The id (UUID) of the device to attach a subscription to.
-      timestamp:
+      created_at:
         type: integer
         format: int64
         readOnly: true
@@ -813,6 +836,10 @@ definitions:
           The duration of the subscription in seconds. If set to '-1' the
           subscription will live forever and if set to '0' it will be instant at
           the time of subscription.
+      pushers:
+        type: array
+        items:
+          type: string
   Subscriptions:
     type: array
     items:
@@ -822,7 +849,7 @@ definitions:
     description: An object representing a match between a subscription and a publication.
     required:
       - id
-      - timestamp
+      - created_at
       - publication
       - subscription
     properties:
@@ -830,7 +857,7 @@ definitions:
         type: string
         readOnly: true
         description: The id (UUID) of the user.
-      timestamp:
+      created_at:
         type: integer
         format: int64
         readOnly: true
@@ -863,6 +890,7 @@ definitions:
       - required:
           - platform
           - deviceToken
+          - location
         properties:
           platform:
             type: string
@@ -902,10 +930,6 @@ definitions:
             - major
             - minor
           properties:
-            vendor:
-              type: string
-              description: The iBeacon's brand
-              default: ""
             proximityUUID:
               type: string
               description: |
