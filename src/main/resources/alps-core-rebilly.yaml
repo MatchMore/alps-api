@@ -2,7 +2,7 @@ swagger: '2.0'
 schemes:
   - https
 host: api.matchmore.io
-basePath: /v04
+basePath: /v4
 info:
   description: |
     ## MATCHMORE
@@ -603,16 +603,13 @@ definitions:
         format: int64
         readOnly: true
         description: |
-          Timestamp of moment when user was created at.
-          The timestamp in seconds since Jan 01 1970. (UTC).
+          The timestamp of the user's creation in seconds since Jan 01 1970 (UTC).
       updated_at:
         type: integer
         format: int64
         readOnly: true
         description: |
-          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
-          provided upon creation then the system uses the moment of the call to
-          the api as a timestamp.
+          The timestamp of the user's update in seconds since Jan 01 1970 (UTC).
   Users:
     type: array
     items:
@@ -651,18 +648,14 @@ definitions:
         type: integer
         format: int64
         readOnly: true
-        description: >-
-          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
-          provided upon creation then the system uses the moment of the call to
-          the api as a timestamp.
+        description: |
+          The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
       updated_at:
         type: integer
         format: int64
         readOnly: true
-        description: >-
-          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
-          provided upon creation then the system uses the moment of the call to
-          the api as a timestamp.
+        description: |
+          The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
   Devices:
     type: array
     items:
@@ -680,9 +673,7 @@ definitions:
         format: int64
         readOnly: true
         description: |
-          The timestamp in seconds since Jan 01 1970. (UTC). If no
-          timestamp is provided upon creation then the system uses
-          the moment of the call to the api as a timestamp.
+          The timestamp of the location creation in seconds since Jan 01 1970 (UTC).
       latitude:
         type: number
         format: double
@@ -748,32 +739,32 @@ definitions:
         type: integer
         format: int64
         readOnly: true
-        description: >-
-          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
-          provided upon creation then the system uses the moment of the call to
-          the api as a timestamp.
+        description: |
+          The timestamp of the publication creation in seconds since Jan 01 1970 (UTC).
       topic:
         type: string
-        description: >-
+        description: |
           The topic of the publication. This will act as a first match filter.
           For a subscription to be able to match a publication they must have
           the exact same topic.
       range:
         type: number
         format: double
-        description: >-
+        description: |
           The range of the publication in meters. This is the range around the
           device holding the publication in which matches with subscriptions can
           be triggered.
       duration:
         type: number
         format: double
-        description: >-
+        description: |
           The duration of the publication in seconds. If set to '-1' the
           publication will live forever and if set to '0' it will be instant at
           the time of publication.
       properties:
-        type: string
+        type: object
+        additionalProperties:
+          type: string
         description: 'The dictionary of key, value pairs.'
   Publications:
     type: array
@@ -806,33 +797,31 @@ definitions:
         type: integer
         format: int64
         readOnly: true
-        description: >-
-          The timestamp in seconds since Jan 01 1970. (UTC). If no timestamp is
-          provided upon creation then the system uses the moment of the call to
-          the api as a timestamp.
+        description: |
+          The timestamp of the subscription creation in seconds since Jan 01 1970 (UTC).
       topic:
         type: string
-        description: >-
+        description: |
           The topic of the subscription. This will act as a first match filter.
           For a subscription to be able to match a publication they must have
           the exact same topic.
       selector:
         type: string
-        description: >-
+        description: |
           This is an expression to filter the publications. For instance
           'job='developer'' will allow matching only with publications
           containing a 'job' key with a value of 'developer'.
       range:
         type: number
         format: double
-        description: >-
+        description: |
           The range of the subscription in meters. This is the range around the
           device holding the subscription in which matches with publications can
           be triggered.
       duration:
         type: number
         format: double
-        description: >-
+        description: |
           The duration of the subscription in seconds. If set to '-1' the
           subscription will live forever and if set to '0' it will be instant at
           the time of subscription.
