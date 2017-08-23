@@ -571,7 +571,7 @@ paths:
         '201':
           description: Expected response to a valid request.
           schema:
-            $ref: '#/definitions/DeviceLocation'
+            $ref: '#/definitions/Location'
         default:
           description: Unexpected error.
           schema:
@@ -581,7 +581,7 @@ definitions:
     type: object
     required:
       - id
-      - created_at
+      - createdAt
     description: |
       A user represents an anonymous user of the ALPS middleware.
       He/she can be connected via its mobile device or a user can
@@ -594,22 +594,22 @@ definitions:
         type: string
         readOnly: true
         description: The id (UUID) of the user.
-      name:
-        type: string
-        description: The name of the user.
-        default: ''
-      created_at:
+      createdAt:
         type: integer
         format: int64
         readOnly: true
         description: |
           The timestamp of the user's creation in seconds since Jan 01 1970 (UTC).
-      updated_at:
+      updatedAt:
         type: integer
         format: int64
         readOnly: true
         description: |
           The timestamp of the user's update in seconds since Jan 01 1970 (UTC).
+      name:
+        type: string
+        description: The name of the user.
+        default: ''
   Users:
     type: array
     items:
@@ -631,31 +631,31 @@ definitions:
     required:
       - id
       - deviceType
-      - created_at
+      - createdAt
     discriminator: deviceType
     properties:
       id:
         type: string
         description: The id (UUID) of the device.
         readOnly: true
+      createdAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
+      updatedAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
       name:
         type: string
         description: The name of the device.
         default: ''
       deviceType:
         $ref: '#/definitions/DeviceType'
-      created_at:
-        type: integer
-        format: int64
-        readOnly: true
-        description: |
-          The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
-      updated_at:
-        type: integer
-        format: int64
-        readOnly: true
-        description: |
-          The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
   Devices:
     type: array
     items:
@@ -663,12 +663,12 @@ definitions:
   Location:
     type: object
     required:
-      - created_at
+      - createdAt
       - latitude
       - longitude
       - altitude
     properties:
-      created_at:
+      createdAt:
         type: integer
         format: int64
         readOnly: true
@@ -722,7 +722,7 @@ definitions:
     required:
       - id
       - deviceId
-      - created_at
+      - createdAt
       - topic
       - range
       - duration
@@ -732,15 +732,15 @@ definitions:
         type: string
         readOnly: true
         description: The id (UUID) of the publication.
-      deviceId:
-        type: string
-        description: The id (UUID) of the device to attach a publication to.
-      created_at:
+      createdAt:
         type: integer
         format: int64
         readOnly: true
         description: |
           The timestamp of the publication creation in seconds since Jan 01 1970 (UTC).
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a publication to.
       topic:
         type: string
         description: |
@@ -780,7 +780,7 @@ definitions:
     required:
       - id
       - deviceId
-      - created_at
+      - createdAt
       - topic
       - selector
       - range
@@ -790,15 +790,15 @@ definitions:
         type: string
         readOnly: true
         description: The id (UUID) of the subscription.
-      deviceId:
-        type: string
-        description: The id (UUID) of the device to attach a subscription to.
-      created_at:
+      createdAt:
         type: integer
         format: int64
         readOnly: true
         description: |
           The timestamp of the subscription creation in seconds since Jan 01 1970 (UTC).
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a subscription to.
       topic:
         type: string
         description: |
@@ -827,6 +827,9 @@ definitions:
           the time of subscription.
       pushers:
         type: array
+        description: |
+          When match will occurs,
+          they will be notified on these provided URI(s) address(es) in the pushers array.
         items:
           type: string
   Subscriptions:
@@ -838,7 +841,7 @@ definitions:
     description: An object representing a match between a subscription and a publication.
     required:
       - id
-      - created_at
+      - createdAt
       - publication
       - subscription
     properties:
@@ -846,7 +849,7 @@ definitions:
         type: string
         readOnly: true
         description: The id (UUID) of the user.
-      created_at:
+      createdAt:
         type: integer
         format: int64
         readOnly: true
