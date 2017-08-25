@@ -208,6 +208,40 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
+  '/users/{userId}/devices/findByType':
+    get:
+      summary: Get all devices of specified type for a user
+      operationId: getDevicesByType
+      tags:
+        - user
+        - device
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device.
+          type: string
+        - name: deviceType
+          in: query
+          description: Type(s) to filter by
+          required: true
+          type: array
+          items:
+            type: string
+            $ref: '#/definitions/DeviceType'
+            default: MobileDevice
+          collectionFormat: multi
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/Devices'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
   '/users/{userId}/devices/{deviceId}':
     get:
       summary: Info about a device of a user
@@ -233,6 +267,70 @@ paths:
           description: Expected response to a valid request.
           schema:
             $ref: '#/definitions/Device'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    post:
+      tags:
+        - user
+        - device
+      summary: Update an existing device
+      operationId: updateDevice
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device.
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device.
+          type: string
+        - in: body
+          name: device
+          description: Device object that needs to be updated
+          required: true
+          schema:
+            $ref: "#/definitions/Device"
+      responses:
+        '400':
+          description: "Invalid ID supplied"
+          schema:
+            $ref: '#/definitions/APIError'
+        '404':
+          description: "Device not found"
+          schema:
+            $ref: '#/definitions/APIError'
+        '405':
+          description: "Validation exception"
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      tags:
+        - user
+        - device
+      summary: Delete an existing user's device
+      operationId: deleteDevice
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device.
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device.
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
         default:
           description: Unexpected error.
           schema:
