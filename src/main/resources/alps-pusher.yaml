@@ -1,0 +1,557 @@
+swagger: '2.0'
+schemes:
+  - https
+host: api.matchmore.io
+basePath: /v4
+info:
+  description: |
+    ## MATCHMORE
+    The first version of the MATCHMORE API is an exciting step to allow
+    developers use a context-aware pub/sub cloud service.  A lot of mobile
+    applications and their use cases may be modeled using this approach and can
+    therefore profit form using MATCHMORE as their backend service.
+    **Build something great with MATCHMORE!**
+    Once you've [registered your
+    client](https://dev.matchmore.io/account/register/) it's easy start using our
+    awesome cloud based context-aware pub/sub (admitted, a lot of buzzwords).
+
+    ## RESTful API
+    We do our best to have all our URLs be
+    [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer).
+    Every endpoint (URL) may support one of four different http verbs. GET
+    requests fetch information about an object, POST requests create objects,
+    PUT requests update objects, and finally DELETE requests will delete
+    objects.
+
+    ## [More about MATCHMORE](https://dev.matchmore.io)
+
+  version: '0.4.0'
+
+  title: MATCHMORE ALPS Pusher REST API
+
+  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+  contact:
+    email: apihelp@matchmore.com
+    url: 'https://dev.matchmore.io/corporate'
+  license:
+    name: MIT
+  x-logo:
+    url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+externalDocs:
+  description: MatchMore Developer Documentation
+  url: 'https://dev.matchmore.com/'
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name : config
+    description : Pusher configuration
+  - name : registration
+    description : Some channels require registration
+securityDefinitions:
+  api-key:
+    type: apiKey
+    in: header
+    name: api-key
+paths:
+  /pusher/init:
+    post:
+      summary: Initialize pusher
+      description: Initializes the pusher for world extracted from the auth token 
+      operationId: init
+      tags:
+        - config
+      responses:
+        '201':
+          description: Pusher was created for World
+  /pusher/config/apns:
+    post:
+      summary: Upload APNS cert
+      operationId: apntCertUpload
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: cert
+          in: formData
+          description: file to upload
+          required: false
+          type: file
+      responses:
+        '201':
+          description: APNS cert succesfully uploaded.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Deletes the current APNS cert
+      operationId: apntCertDelete
+      tags:
+        - config
+      responses:
+        '200':
+          description: Certificate succesfully deleted
+  /pusher/config:
+    get:
+      summary: Current config
+      operationId: config
+      tags:
+        - config
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Flags of current configs
+          schema:
+            $ref: '#/definitions/CurrentConfig'
+  /pusher/config/fcm:
+    post:
+      summary: FCM config
+      operationId: fcmServerKey
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/FCM'
+      responses:
+        '201':
+          description: Config succesfully applied.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Deletes the current FCM config
+      operationId: fcmServerKeyDelete
+      tags:
+        - config
+      responses:
+        '200':
+          description: Config deleted
+  /pusher/config/pushercom:
+    post:
+      summary: Pusher.com config
+      operationId: pusherComConfig
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/PusherCom'
+      responses:
+        '201':
+          description: Config succesfully applied.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Deletes the current Pusher.com config
+      operationId: pusherComDelete
+      tags:
+        - config
+      responses:
+        '200':
+          description: Config deleted
+  /pusher/config/websocket:
+    post:
+      summary: Enables WebSocket pusher
+      operationId: wsConfig
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        '201':
+          description: Config succesfully applied.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Disables WebSocket pusher
+      operationId: wsConfigDelete
+      tags:
+        - config
+      responses:
+        '200':
+          description: Config deleted
+  /pusher/config/http:
+    post:
+      summary: Enables HTTP pusher
+      operationId: httpConfig
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        '201':
+          description: Config succesfully applied.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Disables HTTP pusher
+      operationId: httpConfigDelete
+      tags:
+        - config
+      responses:
+        '200':
+          description: Config deleted
+  '/pusher/fcm/{deviceId}':
+    post:
+      summary: Register Instance Id token
+      operationId: fcmTokenReg
+      tags:
+        - registration
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: |
+            The id (UUID) of the user device
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/FCMInstanceIdToken'
+      responses:
+        '201':
+          description: Token registered
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+  '/pusher/apns/{deviceId}':
+    post:
+      summary: Register registration id
+      operationId: apnsRegistrationId
+      tags:
+        - registration
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: |
+            The id (UUID) of the user device
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/RegisterAPNSDevice'
+      responses:
+        '201':
+          description: Token registered
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError' 
+  '/pusher/ws/{deviceId}':
+    get:
+      summary: Open websocket
+      operationId: openWs
+      tags:
+        - registration
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: |
+            The id (UUID) of the user device
+        - name: channelGroupName
+          in: query
+          required: false
+          type: string
+          description: |
+            Group to which the device wants to subscribe
+        - name: 'Sec-WebSocket-Protocol'
+          in: header
+          required: true
+          description: |
+            Header for authenticating the websocket connection,
+            needs to be structured access_token, {api_token}
+          schema:
+            type: string
+            example: access_token, 42b23ca7-ba26-4fc6-aff9-e270514689a1
+      responses:
+        '101':
+          description: Protocol switch for ws connection
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError' 
+  /pusher/test:
+    post:
+      summary: Pushes a match
+      operationId: pushMatch
+      tags:
+        - development
+      parameters:
+        - name: match
+          in: body
+          required: true
+          description: Match which you want to push
+          schema:
+            $ref: '#/definitions/Match'
+      responses:
+        '201':
+          description: Match pushed
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError' 
+    
+definitions:
+  FCM:
+    type: object
+    required:
+      - serverKey
+    properties:
+      serverKey:
+        type: string
+        readOnly: true
+        description: |
+          the server key from firebase cloud messaging which can be found here
+  FCMInstanceIdToken:
+    type: object
+    required:
+      - instanceIdToken
+    properties:
+      serverKey:
+        type: string
+        readOnly: true
+        description: |
+          the instance id which the app receives from the firebase sdk
+  PusherCom:
+    type: object
+    required:
+      - appId
+      - key
+      - secret
+      - cluster
+    properties:
+      appId:
+        type: string
+        readOnly: true
+        description: |
+          Pusher.com app id
+      key:
+        type: string
+        readOnly: true
+        description: |
+          Pusher.com app key
+      secret:
+        type: string
+        readOnly: true
+        description: |
+          Pusher.com app secret
+      cluster:
+        type: string
+        readOnly: true
+        description: |
+          Pusher.com cluster where the application works on
+  RegisterAPNSDevice:
+    type: object
+    required:
+      - registrationId
+    properties:
+      registrationId:
+        type: string
+        readOnly: true
+        description: |
+          The APNS registration id which the app receives
+  CurrentConfig:
+    type: object
+    properties:
+      apns: 
+        type: boolean
+      fcm: 
+        type: boolean
+      pusher.com: 
+        type: boolean
+      websocket: 
+        type: boolean
+      http:
+        type: boolean
+  APIError:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+  Match:
+    type: object
+    description: An object representing a match between a subscription and a publication.
+    required:
+      - id
+      - createdAt
+      - publication
+      - subscription
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the user.
+      createdAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: The timestamp of the match in seconds since Jan 01 1970 (UTC).
+      publication:
+        $ref: '#/definitions/Publication'
+      subscription:
+        $ref: '#/definitions/Subscription'
+  Publication:
+    type: object
+    description: |
+      A publication can be seen as a JavaMessagingService (JMS)
+      publication extended with the notion of a geographical zone.
+      The zone is defined as circle with a center at the given
+      location and a range around that location.
+    required:
+      - id
+      - deviceId
+      - createdAt
+      - topic
+      - range
+      - duration
+      - properties
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the publication.
+      createdAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp of the publication creation in seconds since Jan 01 1970 (UTC).
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a publication to.
+      topic:
+        type: string
+        description: |
+          The topic of the publication. This will act as a first match filter.
+          For a subscription to be able to match a publication they must have
+          the exact same topic.
+      range:
+        type: number
+        format: double
+        description: |
+          The range of the publication in meters. This is the range around the
+          device holding the publication in which matches with subscriptions can
+          be triggered.
+      duration:
+        type: number
+        format: double
+        description: |
+          The duration of the publication in seconds. If set to '-1' the
+          publication will live forever and if set to '0' it will be instant at
+          the time of publication.
+      properties:
+        type: object
+        additionalProperties:
+          type: string
+        description: 'The dictionary of key, value pairs.'
+  Subscription:
+    type: object
+    description: |
+      A subscription can be seen as a JMS subscription extended
+      with the notion of geographical zone. The zone again being
+      defined as circle with a center at the given location and a range
+      around that location.
+    required:
+      - id
+      - deviceId
+      - createdAt
+      - topic
+      - selector
+      - range
+      - duration
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the subscription.
+      createdAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp of the subscription creation in seconds since Jan 01 1970 (UTC).
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a subscription to.
+      topic:
+        type: string
+        description: |
+          The topic of the subscription. This will act as a first match filter.
+          For a subscription to be able to match a publication they must have
+          the exact same topic.
+      selector:
+        type: string
+        description: |
+          This is an expression to filter the publications. For instance
+          'job='developer'' will allow matching only with publications
+          containing a 'job' key with a value of 'developer'.
+      range:
+        type: number
+        format: double
+        description: |
+          The range of the subscription in meters. This is the range around the
+          device holding the subscription in which matches with publications can
+          be triggered.
+      duration:
+        type: number
+        format: double
+        description: |
+          The duration of the subscription in seconds. If set to '-1' the
+          subscription will live forever and if set to '0' it will be instant at
+          the time of subscription.
+      pushers:
+        type: array
+        description: |
+          When match will occurs,
+          they will be notified on these provided URI(s) address(es) in the pushers array.
+        items:
+          type: string
