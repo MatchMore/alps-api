@@ -5,7 +5,7 @@ host: api.matchmore.io
 basePath: /v4
 info:
   description: |
-    ## [MATCHMORE](https://dev.matchmore.io)
+    ## ALPS by [MATCHMORE](https://dev.matchmore.io)
 
     The first version of the MATCHMORE API is an exciting step to
     allow developers use a context-aware pub/sub cloud service.  A lot
@@ -13,7 +13,7 @@ info:
     this approach and can therefore profit from using MATCHMORE as
     their backend service.
 
-    **Build something great with [MATCHMORE](https://dev.matchmore.io)!**
+    **Build something great with [ALPS by MATCHMORE](https://dev.matchmore.io)!**
 
 
     Once you've [registered your
@@ -221,7 +221,7 @@ info:
   x-logo:
     url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
-  description: MatchMore Developer Documentation
+  description: MatchMore ALPS Developer Documentation
   url: 'https://dev.matchmore.com/'
 consumes:
   - application/json
