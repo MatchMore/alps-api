@@ -2,7 +2,7 @@ swagger: '2.0'
 schemes:
   - https
 host: api.matchmore.io
-basePath: /v4
+basePath: /v5
 info:
   description: |
     ## ALPS by [MATCHMORE](https://dev.matchmore.io)
@@ -43,11 +43,9 @@ info:
                             +---+---+
                             | World |
                             +---+---+
-                                |
-                                |
-                            +---+---+                       +-------------+
-                            + User  +                 +-----+ Publication |
-                            +---+---+                 |     +------+------+
+                                |                           +-------------+
+                                |                     +-----+ Publication |
+                                |                     |     +------+------+
                                 |                     |            |
                                 |                     |            |
                                 |                     |            |
@@ -77,13 +75,7 @@ info:
         the registration, the developer needs to provide additional
         configuration information for each application, e.g. its default
         **push endpoint** URI for match delivery, etc.
-    2.  A [**user**](#tag/user) represents an *anonymous* user of the ALPS Core cloud
-        service.  He/she can be connected via its mobile device or a user
-        can be just an owner of Pin- or iBeacon devices.  A user issues
-        **publications** and **subscriptions** for one of his associated
-        **devices**, i.e. the publications and subscriptions *belong* to the
-        particular device.
-    3.  A [**device**](#tag/device) might be either *virtual* like a **pin device** or
+    2.  A [**device**](#tag/device) might be either *virtual* like a **pin device** or
         *physical* like a **mobile device** or **iBeacon device**.  A [**pin
         device**](#tag/device) is one that has geographical [**location**](#tag/location) associated with it
         but is not represented by any object in the physical world; usually
@@ -98,29 +90,29 @@ info:
         It doesn't necessary has any location associated with it but it
         serves to detect and announce its proximity to other **mobile
         devices**.
-    4.  The hardware and software stack running on a given device is known
+    3.  The hardware and software stack running on a given device is known
         as its **platform**.  This include its hardware-related capabilities,
         its operating systems, as well as the set of libraries (APIs)
         offered to developers in order to program it.
-    5.  A user may issue publications and subscriptions on his/her devices
+    4.  A devices may issue publications and subscriptions
         at **any time**; it may also cancel publications and subscriptions
         issued previously.  **Publications** and **subscriptions** do have a
         definable, finite duration, after which they are deleted from the
         ALPS Core cloud service and don't participate anymore in the
         matching process.
-    6.  A [**publication**](#tag/publication) is similar to a Java Messaging Service (JMS)
+    5.  A [**publication**](#tag/publication) is similar to a Java Messaging Service (JMS)
         publication extended with the notion of a **geographical zone**.  The
         zone is defined as **circle** with a center at the given location and
         a range around that location.
-    7.  A [**subscription**](#tag/subscription) is similar to a JMS subscription extended with the
+    6.  A [**subscription**](#tag/subscription) is similar to a JMS subscription extended with the
         notion of **geographical zone**. Again, the zone being defined as
         **circle** with a center at the given location and a range around
         that location.
-    8.  **Publications** and **subscriptions** which are associated with a
+    7.  **Publications** and **subscriptions** which are associated with a
         **mobile device**, e.g. user's mobile phone, potentially **follow the
         movements** of the user carrying the device and therefore change
         their associated location.
-    9.  A [**match**](#tag/match) between a publication and a subscription occurs when both
+    8.  A [**match**](#tag/match) between a publication and a subscription occurs when both
         of the following two conditions hold:
         1.  There is a **context match** occurs when for instance the
             subscription zone overlaps with the publication zone or a
@@ -131,13 +123,13 @@ info:
             issued on the same topic and have compatible properties and the
             evaluation of the selector against those properties returns true
             value.
-    10. A **push notification** is an asynchronous mechanism that allows a
-        user to receive matches for a subscription on his/her device.
+    9.  A **push notification** is an asynchronous mechanism that allows an
+        application to receive matches for a subscription on his/her device.
         Such a mechanism is clearly dependent on the device’s platform and
-        capabilities.  In order to use push notifications, a user must
+        capabilities.  In order to use push notifications, an application must
         first register a device (and possibly an application on that
         device) with the ALPS core cloud service.
-    11. Whenever a **match** between a publication and a subscription
+    10. Whenever a **match** between a publication and a subscription
         occurs, the device which owns the subscription receives that match
         *asynchronously* via a push notification if there exists a
         registered **push endpoint**.  A **push endpoint** is an URI which is
@@ -145,7 +137,7 @@ info:
         subscription.  The **push endpoint** doesn't necessary point to a
         **mobile device** but is rather a very flexible mechanism to define
         where the matches should be delivered.
-    12. Matches can also be retrieved by issuing a API call for a
+    11. Matches can also be retrieved by issuing a API call for a
         particular device.
 
 
@@ -158,6 +150,7 @@ info:
                        +--------+
                        | id     |
                        | name   |
+                       | group  |
                        +----+---+
                             |
             +---------------+----------------+
@@ -182,6 +175,7 @@ info:
 
     -   id
     -   name
+    -   group
 
     <a id="orgc430925"></a>
 
@@ -208,7 +202,7 @@ info:
     -   location
 
 
-  version: '0.4.0'
+  version: '0.5.0'
 
   title: MATCHMORE ALPS Core REST API
 
@@ -228,10 +222,6 @@ consumes:
 produces:
   - application/json
 tags:
-  - name : user
-    description : Manage user
-  - name : users
-    description: Get information about users
   - name : device
     description : Operation about device
   - name : location
@@ -248,15 +238,46 @@ securityDefinitions:
     in: header
     name: api-key
 paths:
-  /users:
-    get:
-      summary: List all users
-      operationId: getUsers
+  '/devices':
+    post:
+      summary: Create a device
+      operationId: createDevice
       tags:
-        - users
+        - device
+      consumes:
+        - application/json
       produces:
         - application/json
       parameters:
+        - name: device
+          in: body
+          required: true
+          description: The device to be created.
+          schema:
+            $ref: '#/definitions/Device'
+      responses:
+        '201':
+          description: Representation of the newly created device.
+          schema:
+            $ref: '#/definitions/Device'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    get:
+      summary: Get all devices ids
+      operationId: getDevices
+      tags:
+        - device
+      produces:
+        - application/json
+      parameters:
+        - name: offset
+          in: query
+          description: 'How many items to to skip when return (default 0)'
+          required: false
+          type: integer
+          format: int32
         - name: limit
           in: query
           description: 'How many items to return at one time (1-100, default 100)'
@@ -265,169 +286,94 @@ paths:
           format: int32
       responses:
         '200':
-          description: An array of users.
-          schema:
-            $ref: '#/definitions/Users'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-    post:
-      summary: Create a user
-      operationId: createUser
-      tags:
-        - users
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: user
-          in: body
-          description: The skeleton object of the user to be created.
-          required: true
-          schema:
-            $ref: '#/definitions/User'
-      responses:
-        '201':
-          description: Newly created user.
-          schema:
-            $ref: '#/definitions/User'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-  '/users/{userId}':
-    get:
-      summary: Info about a user
-      operationId: getUser
-      tags:
-        - user
-      produces:
-        - application/json
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user to retrieve.
-          type: string
-      responses:
-        '200':
           description: Expected response to a valid request.
           schema:
-            $ref: '#/definitions/Users'
+            $ref: '#/definitions/DeviceIds'
         default:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices':
-    post:
-      summary: Create device for a user
-      operationId: createDevice
-      tags:
-        - user
-        - device
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user for which to create a device.
-          type: string
-        - name: device
-          in: body
-          required: true
-          description: The device to be created for the user.
-          schema:
-            $ref: '#/definitions/Device'
-      responses:
-        '201':
-          description: Representation of the newly created device for the user.
-          schema:
-            $ref: '#/definitions/Device'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
+  '/devices/types/{deviceType}':
     get:
-      summary: Get all devices for a user
-      operationId: getDevices
-      tags:
-        - user
-        - device
-      produces:
-        - application/json
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
-      responses:
-        '200':
-          description: Expected response to a valid request.
-          schema:
-            $ref: '#/definitions/Devices'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/findByType':
-    get:
-      summary: Get all devices of specified type for a user
+      summary: Get all device ids for devices of specified type
       operationId: getDevicesByType
       tags:
-        - user
         - device
       produces:
         - application/json
       parameters:
-        - name: userId
+        - name: deviceType
           in: path
           required: true
-          description: The id (UUID) of the user of the device.
+          description: "The deviceType to return"
           type: string
-        - name: deviceType
-          in: query
-          description: Type(s) to filter by
-          required: true
-          type: array
-          items:
-            type: string
-            $ref: '#/definitions/DeviceType'
-            default: MobileDevice
-          collectionFormat: multi
+          enum:
+            - MobileDevice
+            - PinDevice
+            - IBeaconDevice
       responses:
         '200':
           description: Expected response to a valid request.
           schema:
-            $ref: '#/definitions/Devices'
+            $ref: '#/definitions/DeviceIds'
         default:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}':
+  '/devices/groups/{group}':
     get:
-      summary: Info about a device of a user
-      operationId: getDevice
+      summary: Get all device ids for devices that belongs to specific group
+      operationId: getDevicesByGroup
       tags:
-        - user
         - device
       produces:
         - application/json
       parameters:
-        - name: userId
+        - name: group
           in: path
           required: true
-          description: The id (UUID) of the user of the device.
+          description: "The group to return, grops are string that can be max 25 characters long and contains letters numbers or underscores"
           type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/DeviceIds'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Deletes all devices belonging to certain group
+      operationId: deleteDevicesByGroup
+      tags:
+        - device
+      parameters:
+        - name: group
+          in: path
+          required: true
+          description: "The group to return, grops are string that can be max 25 characters long and contains letters numbers or underscores"
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+  '/devices/{deviceId}':
+    get:
+      summary: Info about a device
+      operationId: getDevice
+      tags:
+        - device
+      produces:
+        - application/json
+      parameters:
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
       responses:
         '200':
@@ -438,68 +384,16 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-    post:
-      tags:
-        - user
-        - device
-      summary: Update an existing device
-      operationId: updateDevice
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
-        - name: deviceId
-          in: path
-          required: true
-          description: The id (UUID) of the user device.
-          type: string
-        - in: body
-          name: device
-          description: Device object that needs to be updated
-          required: true
-          schema:
-            $ref: "#/definitions/Device"
-      responses:
-        '200':
-          description: Expected response to a valid request
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-        # '400':
-        #   description: "Invalid ID supplied"
-        #   schema:
-        #     $ref: '#/definitions/APIError'
-        # '404':
-        #   description: "Device not found"
-        #   schema:
-        #     $ref: '#/definitions/APIError'
-        # '405':
-        #   description: "Validation exception"
-        #   schema:
-        #     $ref: '#/definitions/APIError'
     delete:
       tags:
-        - user
         - device
-      summary: Delete an existing user's device
+      summary: Delete an existing device
       operationId: deleteDevice
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
       responses:
         '200':
@@ -508,7 +402,7 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/matches':
+  '/devices/{deviceId}/matches':
     get:
       summary: Get matches for the device
       operationId: getMatches
@@ -518,15 +412,10 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
       responses:
         '200':
@@ -537,12 +426,11 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/publications':
+  '/devices/{deviceId}/publications':
     post:
-      summary: Create a publication for a device for a user
+      summary: Create a publication for a device
       operationId: createPublication
       tags:
-        - user
         - device
         - publication
       consumes:
@@ -550,15 +438,10 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user to create a device for.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
         - name: publication
           in: body
@@ -581,17 +464,11 @@ paths:
       summary: Get all publications for a device
       operationId: getPublications
       tags:
-        - user
         - device
         - publication
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user.
-          type: string
         - name: deviceId
           in: path
           required: true
@@ -606,26 +483,20 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/publications/{publicationId}':
+  '/devices/{deviceId}/publications/{publicationId}':
     get:
-      summary: Info about a publication on a device of a user
+      summary: Info about a publication on a device
       operationId: getPublication
       tags:
-        - user
         - device
         - publication
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
         - name: publicationId
           in: path
@@ -643,22 +514,16 @@ paths:
             $ref: '#/definitions/APIError'
     delete:
       tags:
-        - user
         - device
         - publication
       summary: Delete a Publication
       description: ''
       operationId: deletePublication
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
         - name: publicationId
           in: path
@@ -672,12 +537,11 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/subscriptions':
+  '/devices/{deviceId}/subscriptions':
     post:
-      summary: Create a subscription for a device for a user
+      summary: Create a subscription for a device
       operationId: createSubscription
       tags:
-        - user
         - device
         - subscription
       consumes:
@@ -685,18 +549,12 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          type: string
-          description: |
-            The id (UUID) of the user to create a device for.
         - name: deviceId
           in: path
           required: true
           type: string
           description: |
-            The id (UUID) of the user device.
+            The id (UUID) of the device.
         - name: subscription
           required: true
           in: body
@@ -717,17 +575,11 @@ paths:
       summary: Get all subscriptions for a device
       operationId: getSubscriptions
       tags:
-        - user
         - device
         - subscription
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user.
-          type: string
         - name: deviceId
           in: path
           required: true
@@ -742,26 +594,20 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/subscriptions/{subscriptionId}':
+  '/devices/{deviceId}/subscriptions/{subscriptionId}':
     get:
-      summary: Info about a subscription on a device of a user
+      summary: Info about a subscription on a device
       operationId: getSubscription
       tags:
-        - user
         - device
         - subscription
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
         - name: subscriptionId
           in: path
@@ -779,22 +625,16 @@ paths:
             $ref: '#/definitions/APIError'
     delete:
       tags:
-        - user
         - device
         - subscription
       summary: Delete a Subscription
       description: ''
       operationId: deleteSubscription
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user of the device.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
         - name: subscriptionId
           in: path
@@ -808,12 +648,11 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/locations':
+  '/devices/{deviceId}/locations':
     post:
       summary: Create a new location for a device
       operationId: createLocation
       tags:
-        - user
         - device
         - location
       consumes:
@@ -821,11 +660,6 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user.
-          type: string
         - name: deviceId
           in: path
           required: true
@@ -847,37 +681,31 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/users/{userId}/devices/{deviceId}/proximityEvents':
+  '/devices/{deviceId}/proximityEvents':
     post:
       summary: Trigger the proximity event between a device and a ranged BLE iBeacon
       operationId: triggerProximityEvents
       tags:
-        - user
         - device
       consumes:
         - application/json
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: path
-          required: true
-          description: The id (UUID) of the user for which to trigger a proximity event.
-          type: string
         - name: deviceId
           in: path
           required: true
-          description: The id (UUID) of the user device.
+          description: The id (UUID) of the device.
           type: string
         - name: proximityEvent
           in: body
           required: true
-          description: The proximity event to be created for the user.
+          description: The proximity event to be created for the device.
           schema:
             $ref: '#/definitions/ProximityEvent'
       responses:
         '201':
-          description: Representation of the newly created proximity event for the user.
+          description: Representation of the newly created proximity event for the device.
           schema:
             $ref: '#/definitions/ProximityEvent'
         default:
@@ -885,43 +713,6 @@ paths:
           schema:
             $ref: '#/definitions/APIError'
 definitions:
-  User:
-    type: object
-    required:
-      - id
-      - createdAt
-    description: |
-      A user represents an anonymous user of the ALPS middleware.
-      He/she can be connected via its mobile device or a user can
-      be just an owner of Pin- or Beacon devices. A user issues
-      publications and subscriptions for one of his associated
-      devices, i.e. the publications and subscriptions
-      belong to the particular device.
-    properties:
-      id:
-        type: string
-        readOnly: true
-        description: The id (UUID) of the user.
-      createdAt:
-        type: integer
-        format: int64
-        readOnly: true
-        description: |
-          The timestamp of the user's creation in seconds since Jan 01 1970 (UTC).
-      updatedAt:
-        type: integer
-        format: int64
-        readOnly: true
-        description: |
-          The timestamp of the user's update in seconds since Jan 01 1970 (UTC).
-      name:
-        type: string
-        description: The name of the user.
-        default: ''
-  Users:
-    type: array
-    items:
-      $ref: '#/definitions/User'
   DeviceType:
     type: string
     description: |
@@ -958,6 +749,15 @@ definitions:
         readOnly: true
         description: |
           The timestamp of the device's creation in seconds since Jan 01 1970 (UTC).
+      group:
+        type: "array"
+        items:
+          type: "string"
+        example:
+          - "first_group"
+          - "SecondGroup"
+          - "thirdGroup"
+        description: Optional device groups, one device can belong to multiple groups, grops are string that can be max 25 characters long and contains letters numbers or underscores
       name:
         type: string
         description: The name of the device.
@@ -968,6 +768,17 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/Device'
+
+  DeviceIds:
+    type: array
+    items:
+      type: "string"
+      example:
+      - "bd573044-6a1b-46d5-b9cb-95e7f741c909"
+      - "c7e3ed64-0728-4acd-a13f-9defc8eb48bf"
+      - "9e9dc0ab-bb6e-4662-bebf-d1b27b36ca3c"
+      - "58fc18aa-ccbe-4827-a71b-2cbe48e7f021"
+
   Location:
     type: object
     required:
@@ -1029,6 +840,7 @@ definitions:
       location and a range around that location.
     required:
       - id
+      - worldId
       - deviceId
       - createdAt
       - topic
@@ -1046,6 +858,9 @@ definitions:
         readOnly: true
         description: |
           The timestamp of the publication creation in seconds since Jan 01 1970 (UTC).
+      worldId:
+        type: string
+        description: The id (UUID) of the world that contains device to attach a publication to.
       deviceId:
         type: string
         description: The id (UUID) of the device to attach a publication to.
@@ -1087,6 +902,7 @@ definitions:
       around that location.
     required:
       - id
+      - worldId
       - deviceId
       - createdAt
       - topic
@@ -1104,6 +920,9 @@ definitions:
         readOnly: true
         description: |
           The timestamp of the subscription creation in seconds since Jan 01 1970 (UTC).
+      worldId:
+        type: string
+        description: The id (UUID) of the world that contains device to attach a subscription to.
       deviceId:
         type: string
         description: The id (UUID) of the device to attach a subscription to.
@@ -1156,7 +975,7 @@ definitions:
       id:
         type: string
         readOnly: true
-        description: The id (UUID) of the user.
+        description: The id (UUID) of the match.
       createdAt:
         type: integer
         format: int64
