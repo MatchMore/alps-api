@@ -320,6 +320,24 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
+  '/devices/IBeaconTriples':
+    get:
+      summary: Get IBeacons triples for all registered devices
+      description: Keys in map are device UUIDs and values are IBeacon triples
+      operationId: getIBeaconTriples
+      tags:
+        - device
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/IBeaconTriples'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
   '/devices/groups/{group}':
     get:
       summary: Get all device ids for devices that belongs to specific group
@@ -779,6 +797,40 @@ definitions:
       - "9e9dc0ab-bb6e-4662-bebf-d1b27b36ca3c"
       - "58fc18aa-ccbe-4827-a71b-2cbe48e7f021"
 
+  IBeaconTriples:
+    type: object
+    additionalProperties:
+      $ref: '#/definitions/IBeaconTriple'
+
+  IBeaconTriple:
+    type: object
+    properties:
+      proximityUUID:
+        type: string
+        description: |
+          The UUID of the beacon, the purpose is to distinguish iBeacons
+          in your network, from all other beacons in
+          networks outside your control.
+      major:
+        type: integer
+        description: |
+          Major values are intended to identify and
+          distinguish a group.
+        format: int32
+        minimum: 0
+        exclusiveMinimum: false
+        maximum: 65535
+        exclusiveMaximum: false
+      minor:
+        type: integer
+        description: |
+          Minor values are intended to identify and
+          distinguish an individual.
+        format: int32
+        minimum: 0
+        exclusiveMinimum: false
+        maximum: 65535
+        exclusiveMaximum: false
   Location:
     type: object
     required:
