@@ -260,6 +260,8 @@ paths:
           description: Representation of the newly created device.
           schema:
             $ref: '#/definitions/Device'
+        '403':
+          description: Failed to create device because device limit was exceeded.
         default:
           description: Unexpected error.
           schema:

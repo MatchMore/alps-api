@@ -6,7 +6,7 @@ basePath: /v4
 info:
   description: |
     ## MATCHMORE admin
-    The admin portal 
+    The admin portal
 
     ## RESTful API
     We do our best to have all our URLs be
@@ -53,7 +53,6 @@ paths:
       tags:
         - world
       consumes:
-        - application/json
         - application/x-www-form-urlencoded
       produces:
         - application/json
@@ -61,22 +60,55 @@ paths:
         - name: name
           in: formdata
           description: |
-          
+
             Name of the world
           required: true
           type: string
         - name: pusherendpoint
           in: formdata
           description: |
-          
+
             Main pusher endpoint in this world
           required: true
           type: string
+        - name: limit
+          in: formdata
+          description: |
+
+            Device limit set for this world
+          required: true
+          type: int32
       responses:
         '201':
           description: Indication that the world was successfully created.
           schema:
             $ref: '#/definitions/World'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+  /admin/apps/deviceLimit/{worldId}:
+    post:
+      summary: Set device limit for world
+      operationId: setDeviceLimit
+      tags:
+        - world
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: limit
+          in: formdata
+          description: "Device limit set for this world"
+          required: true
+          type: int32
+        - name: worldId
+          in: path
+          required: true
+          description: "The id (UUID) of the world."
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
         default:
           description: Unexpected error.
           schema:
@@ -96,7 +128,7 @@ definitions:
         type: string
       pushers:
         type: array
-        items: 
+        items:
           type: string
   APIError:
     required:
@@ -108,4 +140,3 @@ definitions:
         format: int32
       message:
         type: string
-  
