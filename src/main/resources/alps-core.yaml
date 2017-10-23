@@ -266,62 +266,6 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-    get:
-      summary: Get all devices ids
-      operationId: getDevices
-      tags:
-        - device
-      produces:
-        - application/json
-      parameters:
-        - name: offset
-          in: query
-          description: 'How many items to to skip when return (default 0)'
-          required: false
-          type: integer
-          format: int32
-        - name: limit
-          in: query
-          description: 'How many items to return at one time (1-100, default 100)'
-          required: false
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: Expected response to a valid request.
-          schema:
-            $ref: '#/definitions/DeviceIds'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-  '/devices/types/{deviceType}':
-    get:
-      summary: Get all device ids for devices of specified type
-      operationId: getDevicesByType
-      tags:
-        - device
-      produces:
-        - application/json
-      parameters:
-        - name: deviceType
-          in: path
-          required: true
-          description: "The deviceType to return"
-          type: string
-          enum:
-            - MobileDevice
-            - PinDevice
-            - IBeaconDevice
-      responses:
-        '200':
-          description: Expected response to a valid request.
-          schema:
-            $ref: '#/definitions/DeviceIds'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
   '/devices/IBeaconTriples':
     get:
       summary: Get IBeacons triples for all registered devices
@@ -336,47 +280,6 @@ paths:
           description: Expected response to a valid request.
           schema:
             $ref: '#/definitions/IBeaconTriples'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-  '/devices/groups/{group}':
-    get:
-      summary: Get all device ids for devices that belongs to specific group
-      operationId: getDevicesByGroup
-      tags:
-        - device
-      produces:
-        - application/json
-      parameters:
-        - name: group
-          in: path
-          required: true
-          description: "The group to return, grops are string that can be max 25 characters long and contains letters numbers or underscores"
-          type: string
-      responses:
-        '200':
-          description: Expected response to a valid request.
-          schema:
-            $ref: '#/definitions/DeviceIds'
-        default:
-          description: Unexpected error.
-          schema:
-            $ref: '#/definitions/APIError'
-    delete:
-      summary: Deletes all devices belonging to certain group
-      operationId: deleteDevicesByGroup
-      tags:
-        - device
-      parameters:
-        - name: group
-          in: path
-          required: true
-          description: "The group to return, grops are string that can be max 25 characters long and contains letters numbers or underscores"
-          type: string
-      responses:
-        '200':
-          description: Expected response to a valid request.
         default:
           description: Unexpected error.
           schema:
@@ -800,13 +703,17 @@ definitions:
       - "58fc18aa-ccbe-4827-a71b-2cbe48e7f021"
 
   IBeaconTriples:
-    type: object
-    additionalProperties:
+    type: array
+    items:
       $ref: '#/definitions/IBeaconTriple'
 
   IBeaconTriple:
     type: object
     properties:
+      deviceId:
+        type: string
+        description: |
+          The deviceId of the beacon.
       proximityUUID:
         type: string
         description: |
