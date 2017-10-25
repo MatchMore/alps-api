@@ -692,16 +692,6 @@ definitions:
     items:
       $ref: '#/definitions/Device'
 
-  DeviceIds:
-    type: array
-    items:
-      type: "string"
-      example:
-      - "bd573044-6a1b-46d5-b9cb-95e7f741c909"
-      - "c7e3ed64-0728-4acd-a13f-9defc8eb48bf"
-      - "9e9dc0ab-bb6e-4662-bebf-d1b27b36ca3c"
-      - "58fc18aa-ccbe-4827-a71b-2cbe48e7f021"
-
   IBeaconTriples:
     type: array
     items:
