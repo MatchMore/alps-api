@@ -46,7 +46,7 @@ securityDefinitions:
     in: header
     name: api-key
 paths:
-  '/admin/v4/worlds':
+  '/admin/v5/worlds':
     post:
       summary: Creates world
       operationId: createWorld
@@ -72,7 +72,7 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/admin/v4/worlds/{worldId}':
+  '/admin/v5/worlds/{worldId}':
     put:
       summary: Set device limit for world
       operationId: setDeviceLimit
