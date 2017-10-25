@@ -129,14 +129,18 @@ definitions:
       id:
         type: string
         readOnly: true
+        description: 'world UUID'
       name:
         type: string
+        description: 'world name'
       limit:
         type: number
+        description: 'maximal number of devices that can be created in the world'
       pushers:
         type: array
         items:
           type: string
+          description: 'pushers used to deliver match notifications for this world'
   APIError:
     required:
       - code
