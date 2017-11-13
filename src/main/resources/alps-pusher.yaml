@@ -2,7 +2,7 @@ swagger: '2.0'
 schemes:
   - https
 host: api.matchmore.io
-basePath: /v4
+basePath: /v5
 info:
   description: |
     ## MATCHMORE
@@ -55,7 +55,7 @@ securityDefinitions:
     in: header
     name: api-key
 paths:
-  /pusher/init:
+  /init:
     post:
       summary: Initialize pusher
       description: Initializes the pusher for world extracted from the auth token 
@@ -65,7 +65,7 @@ paths:
       responses:
         '201':
           description: Pusher was created for World
-  /pusher/config/apns:
+  /config/apns:
     post:
       summary: Upload APNS cert
       operationId: apntCertUpload
@@ -96,7 +96,7 @@ paths:
       responses:
         '200':
           description: Certificate succesfully deleted
-  /pusher/config:
+  /config:
     get:
       summary: Current config
       operationId: config
@@ -109,7 +109,7 @@ paths:
           description: Flags of current configs
           schema:
             $ref: '#/definitions/CurrentConfig'
-  /pusher/config/fcm:
+  /config/fcm:
     post:
       summary: FCM config
       operationId: fcmServerKey
@@ -140,7 +140,7 @@ paths:
       responses:
         '200':
           description: Config deleted
-  /pusher/config/pushercom:
+  /config/pushercom:
     post:
       summary: Pusher.com config
       operationId: pusherComConfig
@@ -171,7 +171,7 @@ paths:
       responses:
         '200':
           description: Config deleted
-  /pusher/config/websocket:
+  /config/websocket:
     post:
       summary: Enables WebSocket pusher
       operationId: wsConfig
@@ -196,7 +196,7 @@ paths:
       responses:
         '200':
           description: Config deleted
-  /pusher/config/http:
+  /config/http:
     post:
       summary: Enables HTTP pusher
       operationId: httpConfig
@@ -221,7 +221,7 @@ paths:
       responses:
         '200':
           description: Config deleted
-  '/pusher/fcm/{deviceId}':
+  '/fcm/{deviceId}':
     post:
       summary: Register Instance Id token
       operationId: fcmTokenReg
@@ -250,7 +250,7 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/pusher/apns/{deviceId}':
+  '/apns/{deviceId}':
     post:
       summary: Register registration id
       operationId: apnsRegistrationId
@@ -279,7 +279,7 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError' 
-  '/pusher/ws/{deviceId}':
+  '/ws/{deviceId}':
     get:
       summary: Open websocket
       operationId: openWs
@@ -314,7 +314,7 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError' 
-  /pusher/test:
+  /test:
     post:
       summary: Pushes a match
       operationId: pushMatch
