@@ -1,0 +1,161 @@
+swagger: '2.0'
+schemes:
+  - https
+host: api.matchmore.io
+basePath: /
+info:
+  description: |
+    ## MATCHMORE admin
+    The admin portal
+
+    ## RESTful API
+    We do our best to have all our URLs be
+    [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer).
+    Every endpoint (URL) may support one of four different http verbs. GET
+    requests fetch information about an object, POST requests create objects,
+    PUT requests update objects, and finally DELETE requests will delete
+    objects.
+
+    ## [More about MATCHMORE](https://dev.matchmore.io)
+
+  version: '0.5.0'
+
+  title: MATCHMORE ALPS Amin REST API
+
+  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+  contact:
+    email: apihelp@matchmore.com
+    url: 'https://dev.matchmore.io/corporate'
+  license:
+    name: MIT
+  x-logo:
+    url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+externalDocs:
+  description: MatchMore Developer Documentation
+  url: 'https://dev.matchmore.com/'
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name : world
+    description : Manage worlds
+securityDefinitions:
+  api-key:
+    type: apiKey
+    in: header
+    name: api-key
+paths:
+  '/admin/v5/worlds':
+    post:
+      summary: Creates world
+      operationId: createWorld
+      tags:
+        - world
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: world
+          in: body
+          required: true
+          description: The world to be created.
+          schema:
+            $ref: '#/definitions/World'
+      responses:
+        '201':
+          description: Indication that the world was successfully created.
+          schema:
+            $ref: '#/definitions/World'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+  '/admin/v5/worlds/{worldId}':
+    put:
+      summary: Set device limit for world
+      operationId: setDeviceLimit
+      tags:
+        - world
+      consumes:
+        - application/json
+      parameters:
+        - name: worldId
+          in: path
+          required: true
+          description: "The id (UUID) of the world."
+          type: string
+        - name: world
+          in: body
+          required: true
+          description: The world data to update.
+          schema:
+            $ref: '#/definitions/WorldUpdate'
+      responses:
+        '200':
+          description: Expected response to a valid request.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Delete world and all of its devices
+      operationId: deleteWorld
+      tags:
+        - world
+      parameters:
+        - name: worldId
+          in: path
+          required: true
+          description: "The id (UUID) of the world."
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+definitions:
+  World:
+    type: object
+    required:
+      - id
+      - name
+      - limit
+      - pushers
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: 'world UUID'
+      name:
+        type: string
+        description: 'world name'
+      limit:
+        type: number
+        description: 'maximal number of devices that can be created in the world'
+      pushers:
+        type: array
+        items:
+          type: string
+          description: 'pushers used to deliver match notifications for this world'
+  WorldUpdate:
+    type: object
+    required:
+      - limit
+    properties:
+      limit:
+        type: number
+        description: 'maximal number of devices that can be created in the world'
+  APIError:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
