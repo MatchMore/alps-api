@@ -31,8 +31,8 @@ info:
 
   termsOfService: 'http://matchmore.io/about/legal/terms/api'
   contact:
-    email: apihelp@matchmore.com
-    url: 'http://matchmore.io/corporate'
+    email: support@matchmore.com
+    url: 'https://matchmore.com'
   license:
     name: MIT
   x-logo:
@@ -58,7 +58,7 @@ paths:
   /pusher/init:
     post:
       summary: Initialize pusher
-      description: Initializes the pusher for world extracted from the auth token 
+      description: Initializes the pusher for world extracted from the auth token
       operationId: init
       tags:
         - config
@@ -278,7 +278,7 @@ paths:
         default:
           description: Unexpected error.
           schema:
-            $ref: '#/definitions/APIError' 
+            $ref: '#/definitions/APIError'
   '/pusher/ws/{deviceId}':
     get:
       summary: Open websocket
@@ -313,7 +313,7 @@ paths:
         default:
           description: Unexpected error.
           schema:
-            $ref: '#/definitions/APIError' 
+            $ref: '#/definitions/APIError'
   /pusher/test:
     post:
       summary: Pushes a match
@@ -333,8 +333,8 @@ paths:
         default:
           description: Unexpected error.
           schema:
-            $ref: '#/definitions/APIError' 
-    
+            $ref: '#/definitions/APIError'
+
 definitions:
   FCM:
     type: object
@@ -397,13 +397,13 @@ definitions:
   CurrentConfig:
     type: object
     properties:
-      apns: 
+      apns:
         type: boolean
-      fcm: 
+      fcm:
         type: boolean
-      pusher.com: 
+      pusher.com:
         type: boolean
-      websocket: 
+      websocket:
         type: boolean
       http:
         type: boolean

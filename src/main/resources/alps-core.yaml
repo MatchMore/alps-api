@@ -214,8 +214,8 @@ info:
 
   termsOfService: 'http://matchmore.io/about/legal/terms/api'
   contact:
-    email: apihelp@matchmore.com
-    url: 'http://matchmore.io/corporate'
+    email: support@matchmore.com
+    url: 'https://matchmore.com'
   license:
     name: MIT
   x-logo:

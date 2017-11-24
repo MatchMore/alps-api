@@ -6,7 +6,7 @@ basePath: /v4
 info:
   description: |
     ## MATCHMORE admin
-    The admin portal 
+    The admin portal
 
     ## RESTful API
     We do our best to have all our URLs be
@@ -24,8 +24,8 @@ info:
 
   termsOfService: 'http://matchmore.io/about/legal/terms/api'
   contact:
-    email: apihelp@matchmore.com
-    url: 'http://matchmore.io/corporate'
+    email: support@matchmore.com
+    url: 'https://matchmore.com'
   license:
     name: MIT
   x-logo:
@@ -61,14 +61,14 @@ paths:
         - name: name
           in: formdata
           description: |
-          
+
             Name of the world
           required: true
           type: string
         - name: pusherendpoint
           in: formdata
           description: |
-          
+
             Main pusher endpoint in this world
           required: true
           type: string
@@ -96,7 +96,7 @@ definitions:
         type: string
       pushers:
         type: array
-        items: 
+        items:
           type: string
   APIError:
     required:
@@ -108,4 +108,3 @@ definitions:
         format: int32
       message:
         type: string
-  
