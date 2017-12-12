@@ -876,7 +876,10 @@ definitions:
       properties:
         type: object
         additionalProperties:
-          type: string
+          allOf: 
+            - type: string
+            - type: number
+            - type: boolean
         description: 'The dictionary of key, value pairs.'
   Publications:
     type: array
