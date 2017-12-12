@@ -5,7 +5,7 @@ host: api.matchmore.io
 basePath: /v5
 info:
   description: |
-    ## ALPS by [MATCHMORE](http://matchmore.io)
+    ## ALPS by [MATCHMORE](https://matchmore.io)
 
     The first version of the MATCHMORE API is an exciting step to
     allow developers use a context-aware pub/sub cloud service.  A lot
@@ -13,11 +13,11 @@ info:
     this approach and can therefore profit from using MATCHMORE as
     their backend service.
 
-    **Build something great with [ALPS by MATCHMORE](http://matchmore.io)!**
+    **Build something great with [ALPS by MATCHMORE](https://matchmore.io)!**
 
 
     Once you've [registered your
-    client](http://matchmore.io/account/register/) it's easy
+    client](https://matchmore.io/account/register/) it's easy
     start using our awesome cloud based context-aware pub/sub
     (admitted, a lot of buzzwords).
 
@@ -206,17 +206,17 @@ info:
 
   title: MATCHMORE ALPS Core REST API
 
-  termsOfService: 'http://matchmore.io/about/legal/terms/api'
+  termsOfService: 'https://matchmore.io/about/legal/terms/api'
   contact:
     email: support@matchmore.com
-    url: 'https://matchmore.com'
+    url: 'https://matchmore.io'
   license:
     name: MIT
   x-logo:
-    url: 'http://matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+    url: 'https://matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
   description: MatchMore ALPS Developer Documentation
-  url: 'http://matchmore.io/'
+  url: 'https://matchmore.io/'
 consumes:
   - application/json
 produces:
