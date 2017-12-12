@@ -2,7 +2,7 @@ swagger: '2.0'
 schemes:
   - https
 host: api.matchmore.io
-basePath: /v4
+basePath: /
 info:
   description: |
     ## MATCHMORE admin
@@ -18,7 +18,7 @@ info:
 
     ## [More about MATCHMORE](http://matchmore.io)
 
-  version: '0.4.0'
+  version: '0.5.0'
 
   title: MATCHMORE ALPS Amin REST API
 
@@ -46,7 +46,7 @@ securityDefinitions:
     in: header
     name: api-key
 paths:
-  /admin/apps:
+  '/admin/v5/worlds':
     post:
       summary: Creates world
       operationId: createWorld
@@ -54,29 +54,65 @@ paths:
         - world
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
-        - name: name
-          in: formdata
-          description: |
-
-            Name of the world
+        - name: world
+          in: body
           required: true
-          type: string
-        - name: pusherendpoint
-          in: formdata
-          description: |
-
-            Main pusher endpoint in this world
-          required: true
-          type: string
+          description: The world to be created.
+          schema:
+            $ref: '#/definitions/World'
       responses:
         '201':
           description: Indication that the world was successfully created.
           schema:
             $ref: '#/definitions/World'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+  '/admin/v5/worlds/{worldId}':
+    put:
+      summary: Set device limit for world
+      operationId: setDeviceLimit
+      tags:
+        - world
+      consumes:
+        - application/json
+      parameters:
+        - name: worldId
+          in: path
+          required: true
+          description: "The id (UUID) of the world."
+          type: string
+        - name: world
+          in: body
+          required: true
+          description: The world data to update.
+          schema:
+            $ref: '#/definitions/WorldUpdate'
+      responses:
+        '200':
+          description: Expected response to a valid request.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Delete world and all of its devices
+      operationId: deleteWorld
+      tags:
+        - world
+      parameters:
+        - name: worldId
+          in: path
+          required: true
+          description: "The id (UUID) of the world."
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
         default:
           description: Unexpected error.
           schema:
@@ -87,17 +123,32 @@ definitions:
     required:
       - id
       - name
+      - limit
       - pushers
     properties:
       id:
         type: string
         readOnly: true
+        description: 'world UUID'
       name:
         type: string
+        description: 'world name'
+      limit:
+        type: number
+        description: 'maximal number of devices that can be created in the world'
       pushers:
         type: array
         items:
           type: string
+          description: 'pushers used to deliver match notifications for this world'
+  WorldUpdate:
+    type: object
+    required:
+      - limit
+    properties:
+      limit:
+        type: number
+        description: 'maximal number of devices that can be created in the world'
   APIError:
     required:
       - code
