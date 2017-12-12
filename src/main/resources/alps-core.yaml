@@ -349,6 +349,44 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
+  '/devices/{deviceId}/matches/{matchId}':
+    get:
+      summary: Get match for the device by its id
+      operationId: getMatch
+      tags:
+        - device
+        - matches
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device.
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device.
+          type: string
+        - name: matchId
+          in: path
+          required: true
+          description: The id (UUID) of the match.
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/Match'
+        '404':
+          description: Match not found.
+          schema:
+            $ref: '#/definitions/Match'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
   '/devices/{deviceId}/publications':
     post:
       summary: Create a publication for a device
