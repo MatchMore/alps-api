@@ -877,7 +877,7 @@ definitions:
         type: object
         example:
           band: "Metallica"
-          hash_tags:
+          tags:
             - "rock"
             - "metal"
           price: 400
