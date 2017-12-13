@@ -875,12 +875,21 @@ definitions:
           the time of publication.
       properties:
         type: object
+        example:
+          band: "Metallica"
+          hash_tags:
+            - "rock"
+            - "metal"
+          price: 400
+          currency: "CHF"
+          free_parking: true 
         additionalProperties:
-          allOf: 
+          anyOf: 
             - type: string
             - type: number
             - type: boolean
-        description: 'The dictionary of key, value pairs.'
+            - type: array
+        description: 'The dictionary of key, value pairs. Allowed values are number, boolean, string and array of afformentioned types'
   Publications:
     type: array
     items:
