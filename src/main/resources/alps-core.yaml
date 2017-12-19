@@ -348,7 +348,7 @@ paths:
           schema:
             $ref: '#/definitions/Device'
         '403':
-          description: Fail to updte device.
+          description: Fail to update device.
         default:
           description: Unexpected error.
           schema:
@@ -729,7 +729,7 @@ definitions:
         description: New device name (optional)
       deviceToken:
         type: string
-        description: APNS token for iOS deivce, if updating mobile device (optional)
+        description: Token used for pushing matches. The token needs to start with `apns://` or `fcm://` dependent on the device or channel the match should be pushed with
 
   IBeaconTriples:
     type: array
