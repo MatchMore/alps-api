@@ -726,10 +726,12 @@ definitions:
     properties:
       name:
         type: string
+        example: Conors Iphone
         description: New device name (optional)
       deviceToken:
         type: string
-        description: Token used for pushing matches. The token needs to start with `apns://` or `fcm://` dependent on the device or channel the match should be pushed with
+        example: "apns://368dde283db539abc4a6419b1795b6131194703b816e4f624ffa12"
+        description: Token used for pushing matches. The token needs to be prefixed with `apns://` or `fcm://` dependent on the device or channel the match should be pushed with
 
   IBeaconTriples:
     type: array
