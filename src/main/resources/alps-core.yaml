@@ -379,6 +379,8 @@ paths:
             The representation of the newly created publication.
           schema:
             $ref: '#/definitions/Publication'
+        '403':
+          description: The publication was invalid, for example, the duration is negative.
         default:
           description: Unexpected error.
           schema:
@@ -490,6 +492,8 @@ paths:
           description: Expected response to a valid request.
           schema:
             $ref: '#/definitions/Subscription'
+        '403':
+          description: The subscription was invalid, for example, the duration is negative.
         default:
           description: Unexpected error.
           schema:
@@ -832,9 +836,8 @@ definitions:
         type: number
         format: double
         description: |
-          The duration of the publication in seconds. If set to '-1' the
-          publication will live forever and if set to '0' it will be instant at
-          the time of publication.
+          The duration of the publication in seconds. If set to '0' it will be instant at
+          the time of publication. Negative values are not allowed.
       properties:
         type: object
         additionalProperties:
@@ -900,9 +903,8 @@ definitions:
         type: number
         format: double
         description: |
-          The duration of the subscription in seconds. If set to '-1' the
-          subscription will live forever and if set to '0' it will be instant at
-          the time of subscription.
+          The duration of the subscription in seconds. If set to '0' it will be instant at
+          the time of subscription. Negative values are not allowed.
       pushers:
         type: array
         description: |
