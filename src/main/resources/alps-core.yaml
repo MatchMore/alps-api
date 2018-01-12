@@ -209,7 +209,7 @@ info:
   termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
   contact:
     email: apihelp@matchmore.com
-    url: 'https://dev.matchmore.io/corporate'
+    url: 'https://matchmore.com'
   license:
     name: MIT
   x-logo:
@@ -321,6 +321,34 @@ paths:
       responses:
         '200':
           description: Expected response to a valid request.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    patch:
+      tags:
+        - device
+      summary: Updates name or/and device token for existing device
+      description: Token can be only updated for mobile devices.
+      operationId: updateDevice
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: device
+          in: body
+          required: true
+          description: The device update description.
+          schema:
+            $ref: '#/definitions/DeviceUpdate'
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/Device'
+        '403':
+          description: Fail to update device.
         default:
           description: Unexpected error.
           schema:
@@ -729,6 +757,19 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/Device'
+
+  DeviceUpdate:
+    type: object
+    description: Describes update of device, it allows to change name of device and device token (only in case of mobile devices)
+    properties:
+      name:
+        type: string
+        example: Conors Iphone
+        description: New device name (optional)
+      deviceToken:
+        type: string
+        example: "apns://368dde283db539abc4a6419b1795b6131194703b816e4f624ffa12"
+        description: Token used for pushing matches. The token needs to be prefixed with `apns://` or `fcm://` dependent on the device or channel the match should be pushed with
 
   IBeaconTriples:
     type: array
