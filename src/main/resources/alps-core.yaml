@@ -809,6 +809,34 @@ definitions:
         exclusiveMinimum: false
         maximum: 65535
         exclusiveMaximum: false
+   SimpleLocation:
+    type: object
+    required:
+      - latitude
+      - longitude
+      - altitude
+    properties:
+      latitude:
+        type: number
+        format: double
+        default: 0
+        description: |
+          The latitude of the device in degrees, for instance
+          '46.5333' (Lausanne, Switzerland).
+      longitude:
+        type: number
+        format: double
+        default: 0
+        description: |
+          The longitude of the device in degrees, for instance
+          '6.6667' (Lausanne, Switzerland).
+      altitude:
+        type: number
+        format: double
+        default: 0
+        description: |
+          The altitude of the device in meters, for instance '495.0' (Lausanne,
+          Switzerland).
   Location:
     type: object
     required:
@@ -914,6 +942,8 @@ definitions:
           The duration of the publication in seconds. If set to '-1' the
           publication will live forever and if set to '0' it will be instant at
           the time of publication.
+      location:
+        "$ref": "#/definitions/SimpleLocation"
       properties:
         type: object
         example:
@@ -994,6 +1024,8 @@ definitions:
           The duration of the subscription in seconds. If set to '-1' the
           subscription will live forever and if set to '0' it will be instant at
           the time of subscription.
+      location:
+        "$ref": "#/definitions/SimpleLocation"
       pushers:
         type: array
         description: |
