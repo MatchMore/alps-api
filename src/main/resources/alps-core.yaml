@@ -809,7 +809,7 @@ definitions:
         exclusiveMinimum: false
         maximum: 65535
         exclusiveMaximum: false
-   SimpleLocation:
+  SimpleLocation:
     type: object
     required:
       - latitude
