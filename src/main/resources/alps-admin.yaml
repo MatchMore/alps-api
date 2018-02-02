@@ -16,23 +16,23 @@ info:
     PUT requests update objects, and finally DELETE requests will delete
     objects.
 
-    ## [More about MATCHMORE](https://dev.matchmore.io)
+    ## [More about MATCHMORE](https://matchmore.io)
 
   version: '0.5.0'
 
   title: MATCHMORE ALPS Amin REST API
 
-  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+  termsOfService: 'https://matchmore.io/about/legal/terms/api'
   contact:
-    email: apihelp@matchmore.com
-    url: 'https://dev.matchmore.io/corporate'
+    email: support@matchmore.com
+    url: 'https://matchmore.io'
   license:
     name: MIT
   x-logo:
-    url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+    url: 'https://matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
   description: MatchMore Developer Documentation
-  url: 'https://dev.matchmore.com/'
+  url: 'https://matchmore.io/'
 consumes:
   - application/json
 produces:
