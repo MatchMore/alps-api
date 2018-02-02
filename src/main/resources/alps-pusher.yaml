@@ -338,8 +338,6 @@ paths:
 definitions:
   FCM:
     type: object
-    required:
-      - serverKey
     properties:
       serverKey:
         type: string
@@ -358,11 +356,6 @@ definitions:
           the instance id which the app receives from the firebase sdk
   PusherCom:
     type: object
-    required:
-      - appId
-      - key
-      - secret
-      - cluster
     properties:
       appId:
         type: string
@@ -386,8 +379,6 @@ definitions:
           Pusher.com cluster where the application works on
   RegisterAPNSDevice:
     type: object
-    required:
-      - registrationId
     properties:
       registrationId:
         type: string
@@ -397,13 +388,13 @@ definitions:
   CurrentConfig:
     type: object
     properties:
-      apns: 
+      apns:
         type: boolean
-      fcm: 
+      fcm:
         type: boolean
-      pusher.com: 
+      pusher.com:
         type: boolean
-      websocket: 
+      websocket:
         type: boolean
       http:
         type: boolean
@@ -421,8 +412,6 @@ definitions:
     type: object
     description: An object representing a match between a subscription and a publication.
     required:
-      - id
-      - createdAt
       - publication
       - subscription
     properties:
@@ -447,9 +436,7 @@ definitions:
       The zone is defined as circle with a center at the given
       location and a range around that location.
     required:
-      - id
       - deviceId
-      - createdAt
       - topic
       - range
       - duration
@@ -501,9 +488,7 @@ definitions:
       defined as circle with a center at the given location and a range
       around that location.
     required:
-      - id
       - deviceId
-      - createdAt
       - topic
       - selector
       - range

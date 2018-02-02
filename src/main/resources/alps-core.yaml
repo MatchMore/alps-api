@@ -655,9 +655,7 @@ definitions:
       A device might be either virtual like a pin device or
       physical like a mobile phone or iBeacon device.
     required:
-      - id
       - deviceType
-      - createdAt
     discriminator: deviceType
     properties:
       id:
@@ -737,7 +735,6 @@ definitions:
   Location:
     type: object
     required:
-      - createdAt
       - latitude
       - longitude
       - altitude
@@ -794,10 +791,8 @@ definitions:
       The zone is defined as circle with a center at the given
       location and a range around that location.
     required:
-      - id
       - worldId
       - deviceId
-      - createdAt
       - topic
       - range
       - duration
@@ -855,10 +850,8 @@ definitions:
       defined as circle with a center at the given location and a range
       around that location.
     required:
-      - id
       - worldId
       - deviceId
-      - createdAt
       - topic
       - selector
       - range
@@ -905,6 +898,13 @@ definitions:
         description: |
           The duration of the subscription in seconds. If set to '0' it will be instant at
           the time of subscription. Negative values are not allowed.
+      matchTTL:
+        type: number
+        format: double
+        description: |
+          The duration of the match in seconds, this describes how often you will get matches when publication and subscription are moving in each other range.
+          If set to '0' you will get matches every time publication or subscription in range will move.
+          Negative values are not allowed.
       pushers:
         type: array
         description: |
@@ -920,8 +920,6 @@ definitions:
     type: object
     description: An object representing a match between a subscription and a publication.
     required:
-      - id
-      - createdAt
       - publication
       - subscription
     properties:
@@ -1034,8 +1032,6 @@ definitions:
       A proximity event is triggered to the core when a mobile device detects
       an iBeacon device in his Bluetooth Low Energy(BLE) range.
     required:
-      - id
-      - createdAt
       - deviceId
       - distance
     properties:

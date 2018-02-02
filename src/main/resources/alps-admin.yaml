@@ -121,7 +121,6 @@ definitions:
   World:
     type: object
     required:
-      - id
       - name
       - limit
       - pushers
