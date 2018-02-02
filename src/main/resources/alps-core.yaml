@@ -325,6 +325,34 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
+    patch:
+      tags:
+        - device
+      summary: Updates name or/and device token for existing device
+      description: Token can be only updated for mobile devices.
+      operationId: updateDevice
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: device
+          in: body
+          required: true
+          description: The device update description.
+          schema:
+            $ref: '#/definitions/DeviceUpdate'
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/Device'
+        '403':
+          description: Fail to update device.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
   '/devices/{deviceId}/matches':
     get:
       summary: Get matches for the device
@@ -345,6 +373,44 @@ paths:
           description: Expected response to a valid request.
           schema:
             $ref: '#/definitions/Matches'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+  '/devices/{deviceId}/matches/{matchId}':
+    get:
+      summary: Get match for the device by its id
+      operationId: getMatch
+      tags:
+        - device
+        - matches
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id (UUID) of the user of the device.
+          type: string
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the user device.
+          type: string
+        - name: matchId
+          in: path
+          required: true
+          description: The id (UUID) of the match.
+          type: string
+      responses:
+        '200':
+          description: Expected response to a valid request.
+          schema:
+            $ref: '#/definitions/Match'
+        '404':
+          description: Match not found.
+          schema:
+            $ref: '#/definitions/Match'
         default:
           description: Unexpected error.
           schema:
@@ -692,6 +758,19 @@ definitions:
     items:
       $ref: '#/definitions/Device'
 
+  DeviceUpdate:
+    type: object
+    description: Describes update of device, it allows to change name of device and device token (only in case of mobile devices)
+    properties:
+      name:
+        type: string
+        example: Conors Iphone
+        description: New device name (optional)
+      deviceToken:
+        type: string
+        example: "apns://368dde283db539abc4a6419b1795b6131194703b816e4f624ffa12"
+        description: Token used for pushing matches. The token needs to be prefixed with `apns://` or `fcm://` dependent on the device or channel the match should be pushed with
+
   IBeaconTriples:
     type: array
     items:
@@ -837,9 +916,21 @@ definitions:
           the time of publication.
       properties:
         type: object
+        example:
+          band: "Metallica"
+          tags:
+            - "rock"
+            - "metal"
+          price: 400
+          currency: "CHF"
+          free_parking: true
         additionalProperties:
-          type: string
-        description: 'The dictionary of key, value pairs.'
+          anyOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: array
+        description: 'The dictionary of key, value pairs. Allowed values are number, boolean, string and array of afformentioned types'
   Publications:
     type: array
     items:
