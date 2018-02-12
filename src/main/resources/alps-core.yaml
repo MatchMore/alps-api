@@ -684,7 +684,7 @@ definitions:
           - "first_group"
           - "SecondGroup"
           - "thirdGroup"
-        description: Optional device groups, one device can belong to multiple groups, grops are string that can be max 25 characters long and contains letters numbers or underscores
+        description: Optional device groups, one device can belong to multiple groups, groups are string that can be max 25 characters long and contains letters numbers or underscores
       name:
         type: string
         description: The name of the device.
