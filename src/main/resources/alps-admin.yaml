@@ -16,23 +16,23 @@ info:
     PUT requests update objects, and finally DELETE requests will delete
     objects.
 
-    ## [More about MATCHMORE](https://dev.matchmore.io)
+    ## [More about MATCHMORE](https://matchmore.io)
 
   version: '0.5.0'
 
   title: MATCHMORE ALPS Amin REST API
 
-  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+  termsOfService: 'https://matchmore.io/about/legal/terms/api'
   contact:
-    email: apihelp@matchmore.com
-    url: 'https://dev.matchmore.io/corporate'
+    email: support@matchmore.com
+    url: 'https://matchmore.io'
   license:
     name: MIT
   x-logo:
-    url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+    url: 'https://matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
   description: MatchMore Developer Documentation
-  url: 'https://dev.matchmore.com/'
+  url: 'https://matchmore.io/'
 consumes:
   - application/json
 produces:
@@ -83,9 +83,9 @@ paths:
       parameters:
         - name: worldId
           in: path
+          type: string
           required: true
           description: "The id (UUID) of the world."
-          type: string
         - name: world
           in: body
           required: true
@@ -107,9 +107,9 @@ paths:
       parameters:
         - name: worldId
           in: path
+          type: string
           required: true
           description: "The id (UUID) of the world."
-          type: string
       responses:
         '200':
           description: Expected response to a valid request.
@@ -117,18 +117,129 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
+  '/admin/v5/worlds/{worldId}/pusher/config/apns':
+    post:
+      summary: Upload APNS cert
+      operationId: apntCertUpload
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: worldId
+          in: path
+          type: string
+          required: true
+          description: "The id (UUID) of the world."
+        - name: cert
+          in: formData
+          description: file to upload
+          required: false
+          type: file
+      responses:
+        '201':
+          description: APNS cert succesfully uploaded.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Deletes the current APNS cert
+      operationId: apntCertDelete
+      parameters:
+        - name: worldId
+          in: path
+          type: string
+          required: true
+          description: "The id (UUID) of the world."
+      tags:
+        - config
+      responses:
+        '200':
+          description: Certificate succesfully deleted
+  '/admin/v5/worlds/{worldId}/pusher/config':
+    get:
+      summary: Current config
+      operationId: config
+      parameters:
+        - name: worldId
+          in: path
+          type: string
+          required: true
+          description: "The id (UUID) of the world."
+      tags:
+        - config
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Flags of current configs
+          schema:
+            $ref: '#/definitions/CurrentConfig'
+  '/admin/v5/worlds/{worldId}/pusher/config/fcm':
+    post:
+      summary: FCM config
+      description: Applies the FCM server key to the app. Please note that you need to provide the legacy server key.
+      operationId: fcmServerKey
+      tags:
+        - config
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: worldId
+          in: path
+          type: string
+          required: true
+          description: "The id (UUID) of the world."
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/FCM'
+      responses:
+        '201':
+          description: Config succesfully applied.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Deletes the current FCM config
+      operationId: fcmServerKeyDelete
+      parameters:
+        - name: worldId
+          in: path
+          type: string
+          required: true
+          description: "The id (UUID) of the world."
+      tags:
+        - config
+      responses:
+        '200':
+          description: Config deleted
 definitions:
+  FCM:
+    type: object
+    required:
+      - serverKey
+    properties:
+      serverKey:
+        type: string
+        description: |
+          the server key from firebase cloud messaging which can be found here
   World:
     type: object
     required:
-      - id
       - name
       - limit
       - pushers
     properties:
       id:
         type: string
-        readOnly: true
         description: 'world UUID'
       name:
         type: string
@@ -149,6 +260,19 @@ definitions:
       limit:
         type: number
         description: 'maximal number of devices that can be created in the world'
+  CurrentConfig:
+    type: object
+    properties:
+      apns: 
+        type: boolean
+      fcm: 
+        type: boolean
+      pusher.com: 
+        type: boolean
+      websocket: 
+        type: boolean
+      http:
+        type: boolean
   APIError:
     required:
       - code

@@ -12,7 +12,7 @@ info:
     therefore profit form using MATCHMORE as their backend service.
     **Build something great with MATCHMORE!**
     Once you've [registered your
-    client](https://dev.matchmore.io/account/register/) it's easy start using our
+    client](https://matchmore.io/account/register/) it's easy start using our
     awesome cloud based context-aware pub/sub (admitted, a lot of buzzwords).
 
     ## RESTful API
@@ -23,23 +23,23 @@ info:
     PUT requests update objects, and finally DELETE requests will delete
     objects.
 
-    ## [More about MATCHMORE](https://dev.matchmore.io)
+    ## [More about MATCHMORE](https://matchmore.io)
 
   version: '0.4.0'
 
   title: MATCHMORE ALPS Pusher REST API
 
-  termsOfService: 'https://dev.matchmore.io/about/legal/terms/api'
+  termsOfService: 'https://matchmore.io/about/legal/terms/api'
   contact:
-    email: apihelp@matchmore.com
-    url: 'https://dev.matchmore.io/corporate'
+    email: support@matchmore.com
+    url: 'https://matchmore.io'
   license:
     name: MIT
   x-logo:
-    url: 'https://dev.matchmore.io/static/img/logo/logo_marina_trans_beta.png'
+    url: 'https://matchmore.io/static/img/logo/logo_marina_trans_beta.png'
 externalDocs:
   description: MatchMore Developer Documentation
-  url: 'https://dev.matchmore.com/'
+  url: 'https://matchmore.io/'
 consumes:
   - application/json
 produces:
@@ -58,7 +58,7 @@ paths:
   /pusher/init:
     post:
       summary: Initialize pusher
-      description: Initializes the pusher for world extracted from the auth token 
+      description: Initializes the pusher for world extracted from the auth token
       operationId: init
       tags:
         - config
@@ -278,7 +278,7 @@ paths:
         default:
           description: Unexpected error.
           schema:
-            $ref: '#/definitions/APIError' 
+            $ref: '#/definitions/APIError'
   '/pusher/ws/{deviceId}':
     get:
       summary: Open websocket
@@ -313,7 +313,7 @@ paths:
         default:
           description: Unexpected error.
           schema:
-            $ref: '#/definitions/APIError' 
+            $ref: '#/definitions/APIError'
   /pusher/test:
     post:
       summary: Pushes a match
@@ -333,13 +333,11 @@ paths:
         default:
           description: Unexpected error.
           schema:
-            $ref: '#/definitions/APIError' 
-    
+            $ref: '#/definitions/APIError'
+
 definitions:
   FCM:
     type: object
-    required:
-      - serverKey
     properties:
       serverKey:
         type: string
@@ -358,11 +356,6 @@ definitions:
           the instance id which the app receives from the firebase sdk
   PusherCom:
     type: object
-    required:
-      - appId
-      - key
-      - secret
-      - cluster
     properties:
       appId:
         type: string
@@ -386,8 +379,6 @@ definitions:
           Pusher.com cluster where the application works on
   RegisterAPNSDevice:
     type: object
-    required:
-      - registrationId
     properties:
       registrationId:
         type: string
@@ -397,13 +388,13 @@ definitions:
   CurrentConfig:
     type: object
     properties:
-      apns: 
+      apns:
         type: boolean
-      fcm: 
+      fcm:
         type: boolean
-      pusher.com: 
+      pusher.com:
         type: boolean
-      websocket: 
+      websocket:
         type: boolean
       http:
         type: boolean
@@ -421,8 +412,6 @@ definitions:
     type: object
     description: An object representing a match between a subscription and a publication.
     required:
-      - id
-      - createdAt
       - publication
       - subscription
     properties:
@@ -447,9 +436,7 @@ definitions:
       The zone is defined as circle with a center at the given
       location and a range around that location.
     required:
-      - id
       - deviceId
-      - createdAt
       - topic
       - range
       - duration
@@ -501,9 +488,7 @@ definitions:
       defined as circle with a center at the given location and a range
       around that location.
     required:
-      - id
       - deviceId
-      - createdAt
       - topic
       - selector
       - range
