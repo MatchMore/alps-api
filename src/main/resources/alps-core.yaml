@@ -336,6 +336,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the device.
+          type: string
         - name: device
           in: body
           required: true
@@ -894,6 +899,10 @@ definitions:
           The topic of the publication. This will act as a first match filter.
           For a subscription to be able to match a publication they must have
           the exact same topic.
+      location:
+        $ref: '#/definitions/Location'
+        description : |
+          In some cases a develop might want to show the location.
       range:
         type: number
         format: double
@@ -965,6 +974,10 @@ definitions:
           The topic of the subscription. This will act as a first match filter.
           For a subscription to be able to match a publication they must have
           the exact same topic.
+      location:
+        $ref: '#/definitions/Location'
+        description : |
+          In some cases a develop might want to show the location.
       selector:
         type: string
         description: |
