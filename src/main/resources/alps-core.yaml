@@ -923,7 +923,7 @@ definitions:
             - type: number
             - type: boolean
             - type: array
-        description: 'The dictionary of key, value pairs. Allowed values are number, boolean, string and array of afformentioned types'
+        description: 'The dictionary of key, value pairs. Allowed values are number, boolean, string and array of aforementioned types'
   Publications:
     type: array
     items:
