@@ -3,6 +3,7 @@ schemes:
   - https
 host: api.matchmore.io
 basePath: /v5
+
 info:
   description: |
     ## ALPS by [MATCHMORE](https://matchmore.io)
@@ -984,6 +985,20 @@ definitions:
         description: |
           The duration of the subscription in seconds. If set to '0' it will be instant at
           the time of subscription. Negative values are not allowed.
+      matchTTL:
+        type: number
+        format: double
+        description: |
+          Duration in seconds. Defaults to subscription duration (only one match will be delivered for pub/sub pair), this parameter tells when to deliver consecutive matches with the same publication.
+          For example, there is a match between publication and subscription and after matchTTL time publication and subscription are still in the range of each other
+          next match will be sent to subscription.
+          This parameter is useful when you have long-lasting publications/subscriptions, and you want to be notified when a match occurs after some time.
+      matchDTL:
+        type: number
+        format: double
+        description: |
+          Distance in meters. Defaults to two times the subscription range. This parameter says if the subscription will get a match again when the position of publication or subscription changes by matchDTL (publication and subscription still have to be in range after the change).
+          This parameter is useful if you have large subscription/publication and subscription should get a match every time publication or subscription moves by matchDTL meters.
       pushers:
         type: array
         description: |
