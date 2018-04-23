@@ -337,6 +337,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: The id (UUID) of the device.
+          type: string
         - name: device
           in: body
           required: true
