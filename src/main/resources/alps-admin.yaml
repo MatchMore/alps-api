@@ -72,7 +72,7 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/admin/v5/worlds/{worldId}':
+  '/admin/v5/worlds/{worldId}/metrics':
     get:
       summary: Get metrics for world
       operationId: worldMetrics
