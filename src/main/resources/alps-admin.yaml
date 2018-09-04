@@ -72,7 +72,25 @@ paths:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/APIError'
-  '/admin/v5/worlds/{worldId}':
+  '/admin/v5/worlds/{worldId}/metrics':
+    get:
+      summary: Get metrics for world
+      operationId: worldMetrics
+      tags:
+        - world
+      parameters:
+        - name: worldId
+          in: path
+          type: string
+          required: true
+          description: "The id (UUID) of the world."
+    produces:
+        - application/json
+      responses:
+        '200':
+          description: World metrics
+          schema:
+            $ref: '#/definitions/WorldMetrics'
     put:
       summary: Set device limit for world
       operationId: setDeviceLimit
@@ -273,6 +291,19 @@ definitions:
         type: boolean
       http:
         type: boolean
+  WorldMetrics:
+    type: object
+    properties:
+      worldId: 
+        type: string
+      publicationCount: 
+        type: number
+      subscriptionCount:
+        type: string
+      matchCount: 
+        type: string
+      deviceCount: 
+        type: string
   APIError:
     required:
       - code
