@@ -819,12 +819,6 @@ definitions:
       - longitude
       - altitude
     properties:
-      createdAt:
-        type: integer
-        format: int64
-        readOnly: true
-        description: |
-          The timestamp of the location creation in seconds since Jan 01 1970 (UTC).
       latitude:
         type: number
         format: double
@@ -846,23 +840,76 @@ definitions:
         description: |
           The altitude of the device in meters, for instance '495.0' (Lausanne,
           Switzerland).
-      horizontalAccuracy:
+  PublicationWithLocation:
+    type: object
+    description: |
+      A publication can be seen as a JavaMessagingService (JMS)
+      publication extended with the notion of a geographical zone.
+      The zone is defined as circle with a center at the given
+      location and a range around that location.
+    required:
+    - worldId
+    - deviceId
+    - topic
+    - location
+    - range
+    - duration
+    - properties
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the publication.
+      createdAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp of the publication creation in seconds since Jan 01 1970 (UTC).
+      worldId:
+        type: string
+        description: The id (UUID) of the world that contains device to attach a publication to.
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a publication to.
+      topic:
+        type: string
+        description: |
+          The topic of the publication. This will act as a first match filter.
+          For a subscription to be able to match a publication they must have
+          the exact same topic.
+      location:
+        "$ref": "#/definitions/Location"
+      range:
         type: number
         format: double
-        default: 1
         description: |
-          The horizontal accuracy of the location, measured on a
-          scale from '0.0' to '1.0', '1.0' being the most
-          accurate. If this value is not specified then the default
-          value of '1.0' is used.
-      verticalAccuracy:
+          The range of the publication in meters. This is the range around the
+          device holding the publication in which matches with subscriptions can
+          be triggered.
+      duration:
         type: number
         format: double
-        default: 1
         description: |
-          The vertical accuracy of the location, measured on a scale from '0.0'
-          to '1.0', '1.0' being the most accurate. If this value is not
-          specified then the default value of '1.0' is used.
+          The duration of the publication in seconds. If set to '0' it will be instant at
+          the time of publication. Negative values are not allowed.
+      properties:
+        type: object
+        example:
+          band: "Metallica"
+          tags:
+          - "rock"
+          - "metal"
+          price: 400
+          currency: "CHF"
+          free_parking: true
+        additionalProperties:
+          anyOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+        description: 'The dictionary of key, value pairs. Allowed values are number, boolean, string and array of aforementioned types'
   Publication:
     type: object
     description: |
@@ -934,6 +981,72 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/Publication'
+  SubscriptionWithLocation:
+    type: object
+    description: |
+      A subscription can be seen as a JMS subscription extended
+      with the notion of geographical zone. The zone again being
+      defined as circle with a center at the given location and a range
+      around that location.
+    required:
+    - worldId
+    - deviceId
+    - topic
+    - selector
+    - location
+    - range
+    - duration
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: The id (UUID) of the subscription.
+      createdAt:
+        type: integer
+        format: int64
+        readOnly: true
+        description: |
+          The timestamp of the subscription creation in seconds since Jan 01 1970 (UTC).
+      worldId:
+        type: string
+        description: The id (UUID) of the world that contains device to attach a subscription to.
+      deviceId:
+        type: string
+        description: The id (UUID) of the device to attach a subscription to.
+      topic:
+        type: string
+        description: |
+          The topic of the subscription. This will act as a first match filter.
+          For a subscription to be able to match a publication they must have
+          the exact same topic.
+      selector:
+        type: string
+        description: |
+          This is an expression to filter the publications. For instance
+          'job='developer'' will allow matching only with publications
+          containing a 'job' key with a value of 'developer'.
+      location:
+        "$ref": "#/definitions/Location"
+      range:
+        type: number
+        format: double
+        description: |
+          The range of the subscription in meters. This is the range around the
+          device holding the subscription in which matches with publications can
+          be triggered.
+      duration:
+        type: number
+        format: double
+        description: |
+          The duration of the subscription in seconds. If set to '0' it will be instant at
+          the time of subscription. Negative values are not allowed.
+      pushers:
+        type: array
+        description: |
+          When match will occurs,
+          they will be notified on these provided URI(s) address(es) in the pushers array.
+        items:
+          type: string
   Subscription:
     type: object
     description: |
@@ -1032,9 +1145,9 @@ definitions:
         readOnly: true
         description: The timestamp of the match in seconds since Jan 01 1970 (UTC).
       publication:
-        $ref: '#/definitions/Publication'
+        $ref: '#/definitions/PublicationWithLocation'
       subscription:
-        $ref: '#/definitions/Subscription'
+        $ref: '#/definitions/SubscriptionWithLocation'
   Matches:
     type: array
     items:
